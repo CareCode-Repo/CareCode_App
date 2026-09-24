@@ -1,0 +1,18 @@
+# 한 사람이 여러 계정으로 커밋한 것을 하나로 모은다.
+# git log / git shortlog / git blame 이 이 파일을 읽어 표시를 정규화한다.
+# 히스토리는 바뀌지 않으므로 안전하다. (GitHub 웹 UI 와 기여도 그래프는 이 파일을
+# 보지 않고 커밋 이메일로 계정을 찾으므로, 그쪽은 계정 설정에 이메일을 추가해야 한다)
+#
+# 형식: 정본이름 <정본이메일> [커밋에찍힌이름] <커밋에찍힌이메일>
+
+# RosieOh — 로컬 git 설정과 GitHub noreply 가 섞여 네 갈래로 갈라져 있었다
+# 이메일 비공개(Block command line pushes) 이후 새 커밋은 noreply 로 찍히므로 이름 무관하게 이메일로 묶는다
+RosieOh <dhxogns920@gmail.com> thoh <thoh@soundmind.life>
+RosieOh <dhxogns920@gmail.com> <20172207@gm.hannam.ac.kr>
+RosieOh <dhxogns920@gmail.com> <104690434+RosieOh@users.noreply.github.com>
+
+# bona1122 — 개인 메일과 GitHub noreply
+bona1122 <vnclfjqm12@gmail.com> <130641796+bona1122@users.noreply.github.com>
+
+# leejimin — 같은 메일인데 표시 이름만 달랐다
+leejimin <jimin980915@naver.com> jimin lee <jimin980915@naver.com>

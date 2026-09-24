@@ -1,0 +1,42 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          # package.json 의 engines 하한(^22.22.2 || >=24.15.0)을 만족해야 한다.
+          # Node 20 에서는 jsdom 30 이 쓰는 undici 가 markAsUncloneable 을 찾지 못해
+          # 테스트가 한 건도 돌지 않고 죽는다.
+          node-version: 24
+          cache: npm
+
+      - run: npm ci
+
+      # 단계를 나눠 두면 어디서 깨졌는지 로그를 뒤지지 않아도 보인다.
+      # 앞 단계가 실패해도 뒤 단계 결과를 함께 보려면 `if: always()` 를 쓴다 —
+      # PR 한 번에 고칠 거리를 모두 알려 주는 편이 왕복을 줄인다.
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Lint
+        if: always()
+        run: npm run lint
+
+      - name: Test
+        if: always()
+        run: npm test
+
+      # 스키마 계약 테스트가 통과해도 빌드가 깨질 수 있다(서버 컴포넌트 경계 등).
+      - name: Build
+        run: npm run build
+        env:
+          NEXT_PUBLIC_API_URL: http://localhost:8080
