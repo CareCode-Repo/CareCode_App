@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--
+        앱이 뜰 때 보이는 배경.
+
+        로그인 화면 배경(Tailwind 토큰 green-200)과 같은 값이다.
+        여기가 다르면 시스템 스플래시에서 웹 화면으로 넘어갈 때 색이 한 번 튄다.
+        색을 바꿀 일이 생기면 scripts/make-app-assets.mjs 의 SPLASH_BG 도 함께 고쳐야
+        스플래시 이미지와 어긋나지 않는다.
+    -->
+    <color name="splash_background">#b5e89e</color>
+</resources>

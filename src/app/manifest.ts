@@ -23,13 +23,19 @@ export default function manifest(): MetadataRoute.Manifest {
     background_color: '#ffffff',
     theme_color: '#4fbe27',
     lang: 'ko',
+    /**
+     * `scripts/make-app-assets.mjs` + `@capacitor/assets` 가 만든 비트맵을 함께 싣는다.
+     * SVG 만 두면 홈 화면 추가 시 아이콘을 그리지 못하는 기기가 있고, 설치 배너 조건을
+     * 충족하려면 192·512 비트맵이 필요하다.
+     *
+     * `maskable` 은 안드로이드가 자기 마스크(원형·스쿼클 등)로 잘라 쓰는 용도다.
+     * 잘려도 되도록 글리프를 안전 영역 안에 줄여 둔 자산이라 그대로 쓸 수 있다.
+     */
     icons: [
-      {
-        src: '/images/app-icon.svg',
-        sizes: 'any',
-        type: 'image/svg+xml',
-        purpose: 'any',
-      },
+      { src: '/images/app-icon.svg', sizes: 'any', type: 'image/svg+xml', purpose: 'any' },
+      { src: '/icons/icon-192.webp', sizes: '192x192', type: 'image/webp', purpose: 'any' },
+      { src: '/icons/icon-512.webp', sizes: '512x512', type: 'image/webp', purpose: 'any' },
+      { src: '/icons/icon-512.webp', sizes: '512x512', type: 'image/webp', purpose: 'maskable' },
     ],
   }
 }

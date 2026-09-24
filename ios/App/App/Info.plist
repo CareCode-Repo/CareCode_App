@@ -22,6 +22,18 @@
 	<string>$(MARKETING_VERSION)</string>
 	<key>CFBundleVersion</key>
 	<string>$(CURRENT_PROJECT_VERSION)</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>가까운 어린이집과 병원을 찾아드리기 위해 현재 위치를 사용합니다. 위치를 저장하지 않으며, 검색할 때만 사용합니다.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>아이 건강기록에 진료기록·처방전 사진을 첨부하거나 프로필 사진을 바꿀 때 사진을 선택하기 위해 사용합니다.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>건강기록에 첨부할 사진을 그 자리에서 찍을 때 사용합니다.</string>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>remote-notification</string>
+	</array>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>UIApplicationSceneManifest</key>
@@ -54,8 +66,6 @@
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
-		<string>UIInterfaceOrientationLandscapeLeft</string>
-		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
 	<key>UISupportedInterfaceOrientations~ipad</key>
 	<array>

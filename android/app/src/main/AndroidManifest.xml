@@ -1,6 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
-
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -8,20 +7,18 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
         <activity
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|smallestScreenSize|screenLayout|uiMode|navigation|density"
             android:name=".MainActivity"
             android:label="@string/title_activity_main"
             android:theme="@style/AppTheme.NoActionBarLaunch"
             android:launchMode="singleTask"
+            android:screenOrientation="portrait"
             android:exported="true">
-
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
         </activity>
 
         <provider
@@ -29,13 +26,35 @@
             android:authorities="${applicationId}.fileprovider"
             android:exported="false"
             android:grantUriPermissions="true">
-            <meta-data
-                android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_paths"></meta-data>
+            <meta-data android:name="android.support.FILE_PROVIDER_PATHS" android:resource="@xml/file_paths" />
         </provider>
     </application>
 
     <!-- Permissions -->
 
     <uses-permission android:name="android.permission.INTERNET" />
+
+    <!--
+        알림. Android 13(API 33)부터 런타임 권한이다. 선언만으로는 알림이 오지 않고
+        앱에서 사용자에게 요청해야 한다(PushNotifications.requestPermissions).
+    -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
+    <!--
+        어린이집·병원 "내 주변" 검색(useGeolocation). 화면 진입 시가 아니라 사용자가
+        직접 누를 때만 요청한다.
+
+        COARSE 만으로도 동네 단위 검색에는 충분하지만, WebView 의 geolocation 은 FINE 이
+        없으면 정확도가 크게 떨어져 결과가 엉뚱해진다. 둘 다 선언하고 실제 승인 수준은
+        사용자가 고른다(Android 12+ 는 "대략" / "정확" 을 사용자가 선택한다).
+    -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
+    <!--
+        카메라 권한은 일부러 선언하지 않는다.
+        건강기록 첨부·프로필 사진은 `<input type="file">` 이고 `capture` 속성이 없어
+        시스템 선택기만 뜬다. 쓰지도 않는 권한을 선언하면 스토어 심사에서 사유를 물고,
+        ACTION_IMAGE_CAPTURE 가 런타임 승인을 요구하게 되는 부작용도 있다.
+    -->
 </manifest>

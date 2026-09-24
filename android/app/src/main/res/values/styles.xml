@@ -16,7 +16,17 @@
     </style>
 
 
+    <!--
+        앱이 뜰 때의 테마.
+
+        안드로이드 12(API 31)부터는 앱이 그리는 스플래시 대신 **시스템이** 앱 아이콘을
+        지정한 배경 위에 띄운다. 배경을 주지 않으면 기본 회색이 나와 브랜드 색과 어긋난다.
+        `android:background` 는 그 이전 버전용이다 — 둘 다 둬야 전 구간에서 같은 색이 나온다.
+    -->
     <style name="AppTheme.NoActionBarLaunch" parent="Theme.SplashScreen">
         <item name="android:background">@drawable/splash</item>
+        <item name="windowSplashScreenBackground">@color/splash_background</item>
+        <!-- 시스템 스플래시가 끝난 뒤 액티비티가 쓸 테마. -->
+        <item name="postSplashScreenTheme">@style/AppTheme.NoActionBar</item>
     </style>
 </resources>
