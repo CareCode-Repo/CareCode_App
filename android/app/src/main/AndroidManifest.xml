@@ -19,6 +19,21 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            <!--
+                카카오 로그인이 끝난 뒤 시스템 브라우저에서 앱으로 돌아오는 통로.
+
+                앱은 로그인을 WebView 안에서 열지 않는다. 카카오가 인앱 브라우저 로그인을
+                막고, 애플도 OAuth 를 외부 브라우저에서 처리하도록 요구한다. 그래서
+                시스템 브라우저로 띄우고, 끝나면 이 스킴으로 앱에 결과를 넘긴다.
+
+                스킴 값은 strings.xml 의 custom_url_scheme (= applicationId).
+            -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="@string/custom_url_scheme" />
+            </intent-filter>
         </activity>
 
         <provider

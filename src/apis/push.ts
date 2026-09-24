@@ -1,3 +1,19 @@
+import {
+  getNativePushPermission,
+  isNativePush,
+  onNativePushOpened,
+  onNativePushReceived,
+  requestNativePushToken,
+} from './pushNative'
+
+/**
+ * 푸시.
+ *
+ * 화면은 이 파일 하나만 본다. 웹(브라우저 Notification + 서비스 워커)과 앱(네이티브 FCM)은
+ * 동작 방식이 전혀 다르지만, 갈라지는 지점을 여기 모아 두어 호출부가 환경을 따지지 않게 한다.
+ * 앱 쪽 구현은 `pushNative.ts` 에 있다.
+ */
+
 /**
  * 웹 푸시(FCM) 설정.
  *
@@ -14,8 +30,15 @@ const firebaseConfig = {
 
 const vapidKey = process.env.NEXT_PUBLIC_FIREBASE_VAPID_KEY
 
-export const isPushConfigured = (): boolean =>
-  !!vapidKey && Object.values(firebaseConfig).every((value) => !!value)
+export const isPushConfigured = (): boolean => {
+  /**
+   * 앱에서는 설정이 번들 안의 네이티브 자격증명(google-services.json /
+   * GoogleService-Info.plist)에 들어 있어 JS 에서 확인할 방법이 없다. 있다고 보고 진행하되,
+   * 없으면 토큰 발급이 실패하고 그 실패는 화면이 이미 다루고 있다.
+   */
+  if (isNativePush()) return true
+  return !!vapidKey && Object.values(firebaseConfig).every((value) => !!value)
+}
 
 /**
  * firebase SDK 는 항상 **지연 로딩**한다.
@@ -36,6 +59,8 @@ const loadMessaging = async () => {
 
 /** 이 브라우저에서 웹 푸시를 쓸 수 있는지. iOS 사파리 등 지원하지 않는 환경이 있다. */
 export const isPushSupported = async (): Promise<boolean> => {
+  // 앱은 WebView 의 Notification API 대신 네이티브 알림을 쓴다.
+  if (isNativePush()) return true
   if (!isPushConfigured()) return false
   if (typeof window === 'undefined' || !('Notification' in window)) return false
 
@@ -53,6 +78,7 @@ const noop = (): void => undefined
 export type PushPermission = 'granted' | 'denied' | 'default' | 'unsupported'
 
 export const getPushPermission = async (): Promise<PushPermission> => {
+  if (isNativePush()) return getNativePushPermission()
   if (!(await isPushSupported())) return 'unsupported'
   return Notification.permission
 }
@@ -66,6 +92,7 @@ export const getPushPermission = async (): Promise<PushPermission> => {
  * 구독 해제 함수를 돌려준다. 푸시를 쓸 수 없으면 아무것도 하지 않는다.
  */
 export const onForegroundPush = async (handler: () => void): Promise<() => void> => {
+  if (isNativePush()) return onNativePushReceived(handler)
   if (!(await isPushSupported())) return noop
   if (Notification.permission !== 'granted') return noop
 
@@ -87,6 +114,7 @@ export const onForegroundPush = async (handler: () => void): Promise<() => void>
  * 권한이 없거나 발급에 실패하면 `null`. 푸시는 부가 수단이라 실패가 화면을 막지 않는다.
  */
 export const requestPushToken = async (): Promise<string | null> => {
+  if (isNativePush()) return requestNativePushToken()
   if (!(await isPushSupported())) return null
 
   try {
@@ -112,4 +140,15 @@ export const requestPushToken = async (): Promise<string | null> => {
     console.error('푸시 토큰 발급 실패', error)
     return null
   }
+}
+
+/**
+ * 알림을 **탭해서** 앱이 열린 경우.
+ *
+ * 웹에서는 서비스 워커가 알림함을 열어 주므로(firebase-messaging-sw.js 의 notificationclick)
+ * 여기서 할 일이 없다. 앱에는 그 서비스 워커가 없어 같은 이동을 코드로 해 줘야 한다.
+ */
+export const onPushOpened = async (handler: () => void): Promise<() => void> => {
+  if (isNativePush()) return onNativePushOpened(handler)
+  return noop
 }

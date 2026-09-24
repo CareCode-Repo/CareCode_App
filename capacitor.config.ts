@@ -52,10 +52,6 @@ const config: CapacitorConfig = {
        */
       resize: KeyboardResize.Native,
     },
-    PushNotifications: {
-      // 알림을 탭했을 때 앱이 받을 수 있도록 배지·소리·알림을 모두 표시 대상으로 둔다.
-      presentationOptions: ['badge', 'sound', 'alert'],
-    },
   },
 }
 

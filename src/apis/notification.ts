@@ -14,6 +14,7 @@ import {
   PutNotificationToReadPath,
   putNotificationToReadPathSchema,
 } from '@/types/apis/notification'
+import { isNativeApp, nativePlatform } from '@/utils/native'
 
 // GET /notifications - 대상은 인증 주체로 결정된다
 export const getNotificationList = async (): Promise<GetNotificationsResponse> => {
@@ -97,9 +98,15 @@ export const putNotificationChannel = async (
 export const postPushToken = async (pushToken: string): Promise<void> => {
   const userId = requireUserId()
 
+  /**
+   * 서버는 이 값을 저장만 하고 발송 경로를 가르는 데 쓰지는 않는다(어차피 FCM 한 갈래다).
+   * 그래도 정확히 보낸다 — 어느 기기에서 등록했는지 모르면 "알림이 안 와요" 를 추적할 수 없다.
+   */
+  const deviceType = isNativeApp() ? nativePlatform().toUpperCase() : 'WEB'
+
   await CareCode.post(
     '/notifications/push-token',
-    { userId, pushToken, deviceType: 'WEB' },
+    { userId, pushToken, deviceType },
     { params: { userId } },
   )
 }

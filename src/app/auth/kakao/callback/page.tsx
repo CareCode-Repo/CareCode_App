@@ -3,9 +3,11 @@
 import { useRouter, useSearchParams } from 'next/navigation'
 import { ReactElement, useEffect, useRef, Suspense } from 'react'
 import { setTokens } from '@/apis/auth'
+import { KAKAO_APP_STATE, buildKakaoAppRedirect } from '@/apis/kakaoAppAuth'
 import { saveRefreshToken } from '@/apis/session'
 import Loading from '@/components/common/loading'
 import { usePostKakaoAuth } from '@/queries/auth'
+import { isNativeApp } from '@/utils/native'
 
 const KakaoCallbackContent = (): ReactElement | null => {
   const router = useRouter()
@@ -16,7 +18,25 @@ const KakaoCallbackContent = (): ReactElement | null => {
   useEffect(() => {
     const code = searchParams.get('code')
 
+    /**
+     * 앱에서 시작한 로그인이면 지금 이 화면은 **시스템 브라우저 안**이다.
+     * 여기서 토큰을 받아 봐야 앱은 알 수 없다. 인가 코드만 커스텀 스킴으로 넘기고 끝낸다.
+     * (앱 안에서는 이 분기를 타지 않는다 — 딥링크 리스너가 state 없이 이 화면을 연다)
+     */
+    if (!isNativeApp() && searchParams.get('state') === KAKAO_APP_STATE) {
+      window.location.replace(buildKakaoAppRedirect(code ? { code } : { error: 'no_code' }))
+      return
+    }
+
     if (!code) {
+      /**
+       * 코드를 이미 받아 교환을 시작했다면, 이건 "코드가 없는 진입" 이 아니라 아래에서
+       * 주소의 코드를 지운 뒤 이 effect 가 다시 돈 것이다. 그대로 두면 교환이 끝나기도 전에
+       * 로그인 화면으로 돌려보내 로그인 중에 화면이 한 번 튄다.
+       * (기기에서 딥링크로 들어올 때 로그로 드러났다)
+       */
+      if (processedRef.current) return
+
       console.error('카카오 인가 코드가 없습니다.')
       router.replace('/')
       return

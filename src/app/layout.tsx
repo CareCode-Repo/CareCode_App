@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next'
 import '@/styles/globals.css'
 import { ReactNode } from 'react'
+import DeepLinkListener from '@/components/common/DeepLinkListener'
 import NativeBootstrap from '@/components/common/NativeBootstrap'
 import NotificationStreamListener from '@/components/common/NotificationStreamListener'
 import PushListener from '@/components/common/PushListener'
@@ -40,25 +41,27 @@ export default function RootLayout({
       <body className={`font-pretendard min-h-dvh antialiased`}>
         <NativeBootstrap>
           <QueryProvider>
-            <SessionBootstrap>
-              <PushListener>
-                <NotificationStreamListener>
-                  <div className="flex min-h-dvh">
-                    {/* 데스크톱 프로모션 패널 */}
-                    <aside className="hidden sm:block sm:flex-1/3">
-                      <PromotionPanel />
-                    </aside>
+            <DeepLinkListener>
+              <SessionBootstrap>
+                <PushListener>
+                  <NotificationStreamListener>
+                    <div className="flex min-h-dvh">
+                      {/* 데스크톱 프로모션 패널 */}
+                      <aside className="hidden sm:block sm:flex-1/3">
+                        <PromotionPanel />
+                      </aside>
 
-                    {/* 앱 콘텐츠 영역 */}
-                    <div className="flex-1 bg-amber-50 sm:flex-2/3">
-                      <div className="app-viewport mx-auto h-dvh max-w-sm overflow-y-auto">
-                        {children}
+                      {/* 앱 콘텐츠 영역 */}
+                      <div className="flex-1 bg-amber-50 sm:flex-2/3">
+                        <div className="app-viewport mx-auto h-dvh max-w-sm overflow-y-auto">
+                          {children}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </NotificationStreamListener>
-              </PushListener>
-            </SessionBootstrap>
+                  </NotificationStreamListener>
+                </PushListener>
+              </SessionBootstrap>
+            </DeepLinkListener>
           </QueryProvider>
         </NativeBootstrap>
       </body>

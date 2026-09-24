@@ -1,5 +1,6 @@
 'use client'
 import { JSX } from 'react'
+import { openKakaoLoginInBrowser } from '@/apis/kakaoAppAuth'
 import Elipse from '@/assets/icons/characters/Ellipse.svg'
 import GroundIcon from '@/assets/icons/characters/ground.svg'
 import CharcacterIcon from '@/assets/icons/characters/login.svg'
@@ -8,6 +9,7 @@ import LogoIcon from '@/assets/icons/logo/logo.svg'
 import ErrorView from '@/components/common/Error'
 import DevLoginButton from '@/components/features/login/DevLoginButton'
 import { useGetKakaoAuthUrlMutation } from '@/queries/auth'
+import { isNativeApp } from '@/utils/native'
 
 export default function Home(): JSX.Element {
   const { mutate: getKakaoAuthUrl, isPending, error, reset } = useGetKakaoAuthUrlMutation()
@@ -15,6 +17,15 @@ export default function Home(): JSX.Element {
   const handleKakaoLogin = () => {
     getKakaoAuthUrl(undefined, {
       onSuccess: (data) => {
+        // 앱에서는 WebView 를 카카오로 보내면 안 된다 — 카카오가 인앱 브라우저 로그인을
+        // 막고, 보내더라도 주소창·뒤로가기가 없어 빠져나올 수 없다. 자세한 흐름은
+        // `apis/kakaoAppAuth.ts` 주석 참고.
+        if (isNativeApp()) {
+          openKakaoLoginInBrowser(data.loginUrl).catch((err) =>
+            console.error('카카오 로그인 창을 열지 못했습니다:', err),
+          )
+          return
+        }
         window.location.href = data.loginUrl
       },
       onError: (err) => {
