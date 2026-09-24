@@ -16,7 +16,13 @@
 import { execFileSync } from 'node:child_process'
 import { appendFileSync, readFileSync } from 'node:fs'
 
-const git = (...args) => execFileSync('git', args, { encoding: 'utf8' }).trim()
+/**
+ * 뒤쪽 공백만 턴다.
+ *
+ * `git diff --stat` 의 첫 줄은 앞에 공백이 붙어 정렬이 맞는다. 통째로 trim 하면 그 줄만
+ * 왼쪽으로 튀어나와 이슈 본문의 코드 블록이 어긋나 보인다.
+ */
+const git = (...args) => execFileSync('git', args, { encoding: 'utf8' }).replace(/\s+$/, '')
 
 /** `.upstream-sync` 는 주석과 key=value 뿐이다. 형식을 늘리지 않는다. */
 const readSyncPoint = () => {
