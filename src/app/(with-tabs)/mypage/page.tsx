@@ -6,6 +6,7 @@ import CameraIcon from '@/assets/icons/camera_small.svg'
 import KakaoIcon from '@/assets/icons/logo/kakao.svg'
 import PencilIcon from '@/assets/icons/pencil.svg'
 import AlertDialog from '@/components/common/AlertDialog'
+import AppVersion from '@/components/common/AppVersion'
 import AuthGuard from '@/components/common/AuthGuard'
 import Button from '@/components/common/Button'
 import Layout from '@/components/common/Layout'
@@ -208,6 +209,9 @@ const MyPage = (): ReactElement => {
             { id: 'withdraw', title: '회원탈퇴', onClick: () => router.push('/mypage/privacy') },
           ]}
         />
+
+        {/* 문의를 받았을 때 물어볼 수 있게 맨 아래에 조용히 둔다. */}
+        <AppVersion />
 
         <AlertDialog
           title="로그아웃 할까요?"

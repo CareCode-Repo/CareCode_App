@@ -1,4 +1,5 @@
 import type { NextConfig } from 'next'
+import pkg from './package.json' with { type: 'json' }
 
 const isDevelopment = process.env.NODE_ENV === 'development'
 
@@ -84,6 +85,14 @@ const securityHeaders = () => {
 
 const nextConfig: NextConfig = {
   pageExtensions,
+
+  /**
+   * 화면에 표시할 버전.
+   *
+   * 문의를 받았을 때 "어느 버전이세요" 를 물을 수 있어야 한다. 앱에서는 네이티브가
+   * 들고 있는 버전이 더 정확하지만(스토어에 올라간 값), 웹에는 그런 게 없어 여기서 준다.
+   */
+  env: { NEXT_PUBLIC_APP_VERSION: pkg.version },
 
   // 정적 export 에는 응답 헤더라는 개념이 없다(Next 도 이 설정을 무시한다).
   ...(isAppBuild
