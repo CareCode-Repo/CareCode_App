@@ -1,5 +1,6 @@
 {
-  "name": "carecode-fe",
+  "name": "carecode-app",
+  "description": "맘편한 — 하나의 소스에서 웹과 네이티브 앱(Android·iOS)을 만든다",
   "version": "0.1.0",
   "private": true,
   "engines": {
