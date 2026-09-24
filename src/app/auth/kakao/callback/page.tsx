@@ -3,6 +3,7 @@
 import { useRouter, useSearchParams } from 'next/navigation'
 import { ReactElement, useEffect, useRef, Suspense } from 'react'
 import { setTokens } from '@/apis/auth'
+import { saveRefreshToken } from '@/apis/session'
 import Loading from '@/components/common/loading'
 import { usePostKakaoAuth } from '@/queries/auth'
 
@@ -36,10 +37,12 @@ const KakaoCallbackContent = (): ReactElement | null => {
     postKakaoAuth(
       { code },
       {
-        onSuccess: (data) => {
+        onSuccess: async (data) => {
           if (data.success) {
-            // 리프레시 토큰은 서버가 HttpOnly 쿠키로 심어 주므로 여기서 다루지 않는다.
             setTokens(data.accessToken, data.user.userId, data.expiresIn)
+            // 웹에서는 서버가 HttpOnly 쿠키로 심어 주므로 no-op 이고, 앱에서는 그 쿠키가 막혀
+            // 본문의 값을 Keychain/Keystore 에 보관한다. 화면을 옮기기 전에 끝내 둔다.
+            await saveRefreshToken(data.refreshToken)
 
             // 콜백은 히스토리에 남기지 않는다. 뒤로가기로 돌아오면 소진된 코드로 재시도하게 된다.
             // 회원가입이 완료되지 않은 경우 회원가입 페이지로

@@ -24,20 +24,13 @@ const NativeBootstrap = ({ children }: { children: React.ReactNode }): ReactElem
     document.documentElement.dataset.native = nativePlatform()
 
     const setup = async (): Promise<void> => {
-      const [{ SplashScreen }, { StatusBar, Style }, { Keyboard, KeyboardResize }] =
-        await Promise.all([
-          import('@capacitor/splash-screen'),
-          import('@capacitor/status-bar'),
-          import('@capacitor/keyboard'),
-        ])
+      const [{ SplashScreen }, { StatusBar, Style }] = await Promise.all([
+        import('@capacitor/splash-screen'),
+        import('@capacitor/status-bar'),
+      ])
 
       // 상태바 글자를 어둡게. 앱 배경이 흰색·연한 노랑이라 밝은 글자는 읽히지 않는다.
       await StatusBar.setStyle({ style: Style.Light }).catch(() => undefined)
-
-      if (isAndroid()) {
-        // 키보드가 올라올 때 화면 전체가 밀려 올라가지 않도록 본문만 줄인다.
-        await Keyboard.setResizeMode({ mode: KeyboardResize.Native }).catch(() => undefined)
-      }
 
       // 웹 자산이 실제로 그려진 다음에 내린다. 시간으로 재면 느린 기기에서 흰 화면이 보인다.
       await SplashScreen.hide()

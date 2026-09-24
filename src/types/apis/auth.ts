@@ -78,8 +78,17 @@ export const postRegisterResponseSchema = registerResponseSchema
 export type PostRegisterResponse = z.infer<typeof postRegisterResponseSchema>
 
 // /auth/refresh
-// 리프레시 토큰은 HttpOnly 쿠키로 오가므로 요청 본문이 없다.
-// 응답의 refreshToken 도 쿠키를 쓰지 않는 클라이언트를 위한 값이라 읽지 않는다.
+/**
+ * 요청 본문.
+ *
+ * 웹에서는 비워 보낸다 — 리프레시 토큰이 HttpOnly 쿠키로 자동으로 실린다.
+ * 앱(WebView)에서는 그 쿠키가 서드파티 쿠키가 되어 iOS 에서 차단되므로, 저장해 둔 토큰을
+ * 본문으로 보낸다. 서버는 쿠키를 먼저 보고 없으면 이 값을 읽는다(AuthController.refreshToken).
+ */
+export const postRefreshTokenBodySchema = z.object({
+  refreshToken: z.string().min(1),
+})
+export type PostRefreshTokenBody = z.infer<typeof postRefreshTokenBodySchema>
 /**
  * 갱신 응답도 로그인과 같은 TokenDto 다 — 최상위 userId 는 채워지지 않는다.
  *
@@ -90,6 +99,13 @@ export type PostRegisterResponse = z.infer<typeof postRegisterResponseSchema>
 export const postRefreshTokenResponseSchema = z.object({
   success: z.boolean(),
   accessToken: z.string(),
+  /**
+   * 서버는 갱신할 때마다 리프레시 토큰을 **교체**하고 이전 것을 폐기한다.
+   * 쿠키를 쓰는 웹은 서버가 알아서 갈아 끼우므로 신경 쓸 일이 없지만, 토큰을 직접 들고 있는
+   * 앱은 이 값을 받아 저장하지 않으면 다음 갱신이 실패해 로그아웃된다.
+   * 쿠키만 쓰던 시절의 응답도 파싱되어야 하므로 필수로 두지 않는다.
+   */
+  refreshToken: z.string().nullish(),
   tokenType: z.string(),
   expiresIn: z.number(),
   user: userSchema,

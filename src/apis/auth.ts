@@ -1,10 +1,17 @@
 import { CareCode } from './interceptor'
 import {
+  clearRefreshToken,
+  getRefreshToken,
+  saveRefreshToken,
+  usesStoredRefreshToken,
+} from './session'
+import {
   PostLoginBody,
   PostLoginResponse,
   PostRefreshTokenResponse,
   postLoginBodySchema,
   postLoginResponseSchema,
+  postRefreshTokenBodySchema,
   postRefreshTokenResponseSchema,
   getKakaoAuthUrlResponseSchema,
   GetKakaoAuthUrlResponse,
@@ -67,6 +74,9 @@ export function getUserId(): string | null {
 /** 새로고침 등으로 메모리가 비었을 때 세션 복구를 시도해도 되는지 여부. */
 export function hasStoredSession(): boolean {
   if (typeof window === 'undefined') return false
+  // 앱에는 쿠키가 없다. 저장해 둔 리프레시 토큰이 곧 "로그인한 적이 있다" 는 증거다.
+  // (메모리 사본을 본다. 부팅 때 loadRefreshToken 이 먼저 올려 둔다 — SessionBootstrap)
+  if (usesStoredRefreshToken()) return getRefreshToken() !== null
   return localStorage.getItem(SESSION_FLAG_KEY) === '1'
 }
 
@@ -77,6 +87,7 @@ export function clearTokens(): void {
 
   sessionStorage.removeItem(USER_ID_KEY)
   localStorage.removeItem(SESSION_FLAG_KEY)
+  void clearRefreshToken()
   // 예전 버전이 저장소에 남겨 둔 토큰이 있으면 함께 지운다.
   sessionStorage.removeItem('accessToken')
   localStorage.removeItem('refreshToken')
@@ -94,14 +105,28 @@ async function autoRefreshToken() {
 
 /**
  * 액세스 토큰 갱신.
- * 리프레시 토큰은 HttpOnly 쿠키로 자동 전송되므로 본문을 보내지 않는다.
- * (withCredentials 가 켜져 있어야 쿠키가 실린다)
+ *
+ * 웹: 리프레시 토큰이 HttpOnly 쿠키로 자동 전송된다(withCredentials 가 켜져 있어야 실린다).
+ * 앱: 그 쿠키는 WebView 에서 서드파티 쿠키가 되어 iOS 가 막는다. 저장해 둔 토큰을 본문으로
+ *     보내고, 응답으로 교체된 토큰을 받아 다시 저장한다.
  */
 export async function refreshAccessToken(): Promise<PostRefreshTokenResponse> {
-  const res = await CareCode.post('/auth/refresh')
+  // 웹은 본문 없이 보낸다 — 쿠키가 알아서 실린다.
+  // 앱은 그 쿠키가 iOS 에서 차단되므로 저장해 둔 토큰을 본문에 싣는다.
+  const storedToken = usesStoredRefreshToken() ? getRefreshToken() : null
+  const body = storedToken
+    ? postRefreshTokenBodySchema.parse({ refreshToken: storedToken })
+    : undefined
+
+  const res = await CareCode.post('/auth/refresh', body)
   const parsed = postRefreshTokenResponseSchema.parse(res.data)
 
   setTokens(parsed.accessToken, parsed.user.userId, parsed.expiresIn)
+
+  // 교체된 토큰의 저장은 **기다린다**. 던져 두면 여기서 앱이 종료됐을 때 디스크에는 옛 토큰이
+  // 남고, 서버는 그것을 이미 폐기한 뒤다 — 다음 실행에서 이유 없이 로그아웃된다.
+  if (parsed.refreshToken) await saveRefreshToken(parsed.refreshToken)
+
   return parsed
 }
 

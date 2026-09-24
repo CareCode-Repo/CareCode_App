@@ -2,12 +2,14 @@
 import { ReactElement, ReactNode, useEffect, useState } from 'react'
 import { clearTokens, getAccessToken, hasStoredSession } from '@/apis/auth'
 import { runRefresh } from '@/apis/interceptor'
+import { loadRefreshToken } from '@/apis/session'
 
 /**
  * 앱 부팅 시 세션 복구.
  *
- * 액세스 토큰은 메모리에만 두므로 새로고침하면 사라진다. 대신 HttpOnly 리프레시 쿠키가
- * 남아 있으므로, 로그인 이력이 있으면 갱신을 한 번 시도해 로그인 상태를 이어붙인다.
+ * 액세스 토큰은 메모리에만 두므로 새로고침하면 사라진다. 대신 리프레시 토큰이 남아 있으므로
+ * (웹은 HttpOnly 쿠키, 앱은 Keychain/Keystore) 로그인 이력이 있으면 갱신을 한 번 시도해
+ * 로그인 상태를 이어붙인다.
  * 복구가 끝나기 전에 하위 화면이 요청을 보내면 불필요한 401 이 나므로 그 동안은 렌더를 미룬다.
  *
  * 첫 렌더는 **서버와 클라이언트가 반드시 같아야** 한다. 판단 근거인 localStorage 는 서버에서
@@ -19,19 +21,23 @@ const SessionBootstrap = ({ children }: { children: ReactNode }): ReactElement =
   const [isRestoring, setIsRestoring] = useState(true)
 
   useEffect(() => {
-    // 복구할 세션이 없으면(로그아웃 상태이거나 토큰이 이미 메모리에 있으면) 그대로 통과시킨다.
-    if (!hasStoredSession() || getAccessToken()) {
-      setIsRestoring(false)
-      return
-    }
-
     let cancelled = false
 
-    runRefresh()
-      .catch(() => clearTokens())
-      .finally(() => {
-        if (!cancelled) setIsRestoring(false)
-      })
+    const restore = async (): Promise<void> => {
+      // 앱에서는 세션의 근거가 네이티브 저장소에 있고, 읽기가 비동기다. 먼저 메모리로
+      // 올려야 hasStoredSession() 이 제대로 판단한다. 웹에서는 곧바로 끝나는 no-op 이다.
+      await loadRefreshToken()
+      if (cancelled) return
+
+      // 복구할 세션이 없으면(로그아웃 상태이거나 토큰이 이미 메모리에 있으면) 그대로 통과시킨다.
+      if (!hasStoredSession() || getAccessToken()) return
+
+      await runRefresh().catch(() => clearTokens())
+    }
+
+    restore().finally(() => {
+      if (!cancelled) setIsRestoring(false)
+    })
 
     return () => {
       cancelled = true

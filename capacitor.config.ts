@@ -1,4 +1,5 @@
 import type { CapacitorConfig } from '@capacitor/cli'
+import { KeyboardResize } from '@capacitor/keyboard'
 
 /**
  * 네이티브 셸 설정.
@@ -41,6 +42,15 @@ const config: CapacitorConfig = {
       launchAutoHide: false,
       backgroundColor: '#ffffff',
       showSpinner: false,
+    },
+    Keyboard: {
+      /**
+       * 키보드가 올라올 때 화면 전체를 밀지 않고 본문만 줄인다.
+       *
+       * 런타임의 `Keyboard.setResizeMode()` 는 안드로이드에 구현돼 있지 않아
+       * `UNIMPLEMENTED` 로 떨어진다. 이 값은 설정으로만 준다.
+       */
+      resize: KeyboardResize.Native,
     },
     PushNotifications: {
       // 알림을 탭했을 때 앱이 받을 수 있도록 배지·소리·알림을 모두 표시 대상으로 둔다.
