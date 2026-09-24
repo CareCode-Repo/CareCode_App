@@ -1,6 +1,7 @@
 import { useRouter } from 'next/navigation'
 import { useCallback, useEffect, useState } from 'react'
 import { useRecentSearches } from './useRecentSearches'
+import { routes } from '@/utils/routes'
 
 interface UseSearchPolicyReturn {
   inputValue: string
@@ -27,7 +28,7 @@ export const useSearchPolicy = (initialKeyword: string = ''): UseSearchPolicyRet
 
       setInputValue(searchTerm)
       addSearch(searchTerm)
-      router.push(`/search/policy?keyword=${encodeURIComponent(searchTerm)}`)
+      router.push(routes.policySearch(searchTerm))
     },
     [addSearch, router, inputValue],
   )

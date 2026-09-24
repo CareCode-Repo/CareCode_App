@@ -11,6 +11,7 @@ import useInfiniteScroll from '@/hooks/useInfiniteScroll'
 import { useSearchPolicy } from '@/hooks/useSearchPolicy'
 import { useSearchPolicies } from '@/queries/policy'
 import { convertPolicyToCardProps } from '@/types/policy'
+import { routes } from '@/utils/routes'
 
 interface PolicySearchPageProps {
   searchParams: Promise<{
@@ -88,7 +89,7 @@ const PolicySearchPage = ({ searchParams }: PolicySearchPageProps): ReactElement
             <PolicyCard
               key={policy.id}
               {...cardProps}
-              onClick={() => router.push(`/policy/${policy.id}`)}
+              onClick={() => router.push(routes.policyDetail(policy.id))}
             />
           )
         })}

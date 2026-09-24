@@ -12,6 +12,7 @@ import Layout from '@/components/common/Layout'
 import { useCancelBooking, useMyBookings } from '@/queries/facility'
 import { BOOKING_STATUS_LABEL, BOOKING_TYPE_LABEL, BookingType } from '@/types/apis/facility'
 import { formatDate } from '@/utils/date'
+import { routes } from '@/utils/routes'
 
 const STATUS_COLOR: Record<string, 'green' | 'yellow' | 'red' | 'white'> = {
   CONFIRMED: 'green',
@@ -67,7 +68,7 @@ const BookingsPage = (): ReactElement => {
                       type="button"
                       className="text-b1-semibold truncate text-gray-800"
                       onClick={() =>
-                        booking.facilityId && router.push(`/facility/${booking.facilityId}`)
+                        booking.facilityId && router.push(routes.facilityDetail(booking.facilityId))
                       }
                     >
                       {booking.facilityName ?? '시설 정보 없음'}

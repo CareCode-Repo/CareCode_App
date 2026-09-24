@@ -12,6 +12,7 @@ import { usePolicyBookmarks } from '@/queries/policy'
 import { PostListItem as Post } from '@/types/apis/community'
 import { PolicyBookmark } from '@/types/apis/policy'
 import { formatDate } from '@/utils/date'
+import { routes } from '@/utils/routes'
 
 const TABS = [
   { value: 'liked', label: '좋아요한 글' },
@@ -52,7 +53,10 @@ const PostSection = ({
     <ul className="flex flex-col gap-3">
       {posts.map((post) => (
         <li key={post.postId}>
-          <PostListItem post={post} onClick={() => router.push(`/community/${post.postId}`)} />
+          <PostListItem
+            post={post}
+            onClick={() => router.push(routes.communityDetail(post.postId))}
+          />
         </li>
       ))}
     </ul>
@@ -95,7 +99,7 @@ const PolicyBookmarkSection = ({
         <li key={bookmark.policyId}>
           <button
             type="button"
-            onClick={() => router.push(`/policy/${bookmark.policyId}`)}
+            onClick={() => router.push(routes.policyDetail(bookmark.policyId))}
             className="flex w-full flex-col gap-1 rounded-lg border border-gray-200 bg-white p-4 text-left focus-visible:ring-2 focus-visible:ring-green-600 focus-visible:outline-none"
           >
             <span className="text-b1-semibold line-clamp-2 text-gray-800">

@@ -19,6 +19,7 @@ import {
 import { ConsentType, SENSITIVE_CONSENT_TYPES } from '@/types/apis/privacy'
 import { formatDate } from '@/utils/date'
 import { downloadJson } from '@/utils/file'
+import { routes } from '@/utils/routes'
 
 /**
  * 동의 이력.
@@ -175,14 +176,14 @@ const PrivacyPage = (): ReactElement => {
           <div className="flex gap-4">
             <button
               type="button"
-              onClick={() => router.push('/legal/terms')}
+              onClick={() => router.push(routes.legalDocument('terms'))}
               className="text-b2-semibold text-green-700 underline"
             >
               이용약관
             </button>
             <button
               type="button"
-              onClick={() => router.push('/legal/privacy-policy')}
+              onClick={() => router.push(routes.legalDocument('privacy-policy'))}
               className="text-b2-semibold text-green-700 underline"
             >
               개인정보 처리방침

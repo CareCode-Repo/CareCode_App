@@ -10,6 +10,7 @@ import MissedBenefitCard from '@/components/features/policy/MissedBenefitCard'
 import { useMyChildren } from '@/queries/child'
 import { useMissedBenefits } from '@/queries/policy'
 import { formatAmount } from '@/utils/money'
+import { routes } from '@/utils/routes'
 
 const MissedBenefitsPage = (): ReactElement => {
   const router = useRouter()
@@ -74,7 +75,7 @@ const MissedBenefitsPage = (): ReactElement => {
                   <MissedBenefitCard
                     key={`${benefit.policyId}-${benefit.childName ?? ''}`}
                     benefit={benefit}
-                    onDetailClick={() => router.push(`/policy/${benefit.policyId}`)}
+                    onDetailClick={() => router.push(routes.policyDetail(benefit.policyId))}
                   />
                 ))}
               </section>
@@ -94,7 +95,7 @@ const MissedBenefitsPage = (): ReactElement => {
                     <MissedBenefitCard
                       key={`${benefit.policyId}-${benefit.childName ?? ''}`}
                       benefit={benefit}
-                      onDetailClick={() => router.push(`/policy/${benefit.policyId}`)}
+                      onDetailClick={() => router.push(routes.policyDetail(benefit.policyId))}
                     />
                   ))}
                 </section>

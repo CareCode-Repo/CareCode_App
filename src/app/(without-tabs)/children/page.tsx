@@ -10,6 +10,7 @@ import Spacer from '@/components/common/Spacer'
 import ChildCard from '@/components/features/child/ChildCard'
 import SiblingOverviewCard from '@/components/features/child/SiblingOverviewCard'
 import { useMyChildren } from '@/queries/child'
+import { routes } from '@/utils/routes'
 
 const ChildrenPage = (): ReactElement => {
   const router = useRouter()
@@ -37,12 +38,17 @@ const ChildrenPage = (): ReactElement => {
           />
         ) : (
           <>
-            <SiblingOverviewCard onChildClick={(childId) => router.push(`/children/${childId}`)} />
+            <SiblingOverviewCard
+              onChildClick={(childId) => router.push(routes.childDetail(childId))}
+            />
             <Spacer className="h-3 shrink-0" />
             <ul className="flex flex-col gap-3">
               {children.map((child) => (
                 <li key={child.id}>
-                  <ChildCard child={child} onClick={() => router.push(`/children/${child.id}`)} />
+                  <ChildCard
+                    child={child}
+                    onClick={() => router.push(routes.childDetail(child.id))}
+                  />
                 </li>
               ))}
             </ul>

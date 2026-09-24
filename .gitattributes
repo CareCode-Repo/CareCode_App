@@ -1,0 +1,17 @@
+# 줄바꿈은 저장소 안에서 언제나 LF 로 둔다.
+#
+# 이 앱은 윈도우(안드로이드 빌드)와 맥(iOS 빌드) 양쪽에서 작업한다. 고정해 두지 않으면
+# 한쪽에서 체크아웃한 것만으로 수백 개 파일이 "수정됨" 으로 뜨고, 실제 변경이 그 속에 묻힌다.
+* text=auto eol=lf
+
+# 네이티브 프로젝트의 래퍼 스크립트·바이너리는 건드리지 않는다.
+*.bat           text eol=crlf
+gradlew         text eol=lf
+*.jar           binary
+*.keystore      binary
+*.png           binary
+*.jpg           binary
+*.ico           binary
+*.ttf           binary
+*.woff          binary
+*.woff2         binary

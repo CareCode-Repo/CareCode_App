@@ -20,6 +20,7 @@ import { useGetCommunityPopular } from '@/queries/community'
 import { useHasUnreadNotifications } from '@/queries/notification'
 import { useGetLatestPolicies, usePolicyRecommendations } from '@/queries/policy'
 import { convertPolicyToCardProps } from '@/types/policy'
+import { routes } from '@/utils/routes'
 
 const Home = (): ReactElement => {
   const router = useRouter()
@@ -76,7 +77,7 @@ const Home = (): ReactElement => {
                   <RecommendedPolicyCard
                     key={recommendation.policy.id}
                     recommendation={recommendation}
-                    onClick={() => router.push(`/policy/${recommendation.policy.id}`)}
+                    onClick={() => router.push(routes.policyDetail(recommendation.policy.id))}
                   />
                 ))
               )}
@@ -129,7 +130,7 @@ const Home = (): ReactElement => {
                       commentCount={post.commentCount}
                       createdDate={format(new Date(post.createdAt), 'MM-dd')}
                       createdTime={format(new Date(post.createdAt), 'HH:mm')}
-                      onClick={() => router.push(`/community/${post.postId}`)}
+                      onClick={() => router.push(routes.communityDetail(post.postId))}
                     />
                     {index < popularPosts.content.length - 1 && <Separator />}
                   </div>

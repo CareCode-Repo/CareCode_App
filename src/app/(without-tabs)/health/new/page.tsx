@@ -12,6 +12,7 @@ import HealthRecordForm, {
 } from '@/components/features/health/HealthRecordForm'
 import { useMyChildren } from '@/queries/child'
 import { useCreateHealthRecord } from '@/queries/health'
+import { routes } from '@/utils/routes'
 
 const NewHealthRecordPage = (): ReactElement => {
   const router = useRouter()
@@ -26,7 +27,7 @@ const NewHealthRecordPage = (): ReactElement => {
     lastValuesRef.current = values
 
     createRecord(toCreateBody(values), {
-      onSuccess: (record) => router.replace(`/health/${record.id}`),
+      onSuccess: (record) => router.replace(routes.healthDetail(record.id)),
       onError: (error) => {
         // 건강정보는 민감정보라 별도 동의가 없으면 서버가 403 으로 막는다.
         const requirement = parseConsentRequired(error)

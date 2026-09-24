@@ -144,3 +144,14 @@ html body[data-scroll-locked] {
   margin: 0 auto !important;
   padding: 0 !important;
 }
+
+/**
+ * 네이티브 앱에서는 기기 폭을 그대로 쓴다.
+ *
+ * 웹에서는 데스크톱 브라우저에서 앱을 "휴대폰 목업"처럼 보이려고 폭을 max-w-sm 으로 묶고
+ * 양옆을 배경색으로 채운다. 그 여백이 실제 휴대폰에서는 잘린 화면처럼 보인다
+ * (예: 폭 411px 기기에서 좌우 13px 씩 남는다).
+ */
+html[data-native] .app-viewport {
+  max-width: none;
+}

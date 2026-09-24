@@ -9,6 +9,7 @@ import ToggleChip from '@/components/common/ToggleChip'
 import Input from '@/components/common/input'
 import { useCreateChild } from '@/queries/child'
 import { ChildBody } from '@/types/apis/child'
+import { routes } from '@/utils/routes'
 
 const GENDER_OPTIONS = [
   { value: 'MALE', label: '남아' },
@@ -31,7 +32,7 @@ const NewChildPage = (): ReactElement => {
 
   const onSubmit = (values: ChildBody) => {
     createChild(values, {
-      onSuccess: (child) => router.replace(`/children/${child.id}`),
+      onSuccess: (child) => router.replace(routes.childDetail(child.id)),
     })
   }
 

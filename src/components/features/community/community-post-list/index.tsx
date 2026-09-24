@@ -5,6 +5,7 @@ import { JSX } from 'react'
 import TimeAgo from './TimeAgo'
 import Spacer from '@/components/common/Spacer'
 import { PostListItem } from '@/types/apis/community'
+import { routes } from '@/utils/routes'
 
 interface CommunityPostProps {
   post: PostListItem
@@ -13,7 +14,7 @@ interface CommunityPostProps {
 const CommunityPost = ({ post }: CommunityPostProps): JSX.Element => {
   const router = useRouter()
   const handlePostClick = () => {
-    router.push(`/community/${post.postId}`)
+    router.push(routes.communityDetail(post.postId))
   }
 
   return (

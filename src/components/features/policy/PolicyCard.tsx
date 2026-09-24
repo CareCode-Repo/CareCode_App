@@ -8,6 +8,7 @@ import DescriptionItem from '@/components/common/DescriptionItem'
 import Spacer from '@/components/common/Spacer'
 import Tag from '@/components/common/Tag'
 import { PolicyCardProps, getChipColor } from '@/types/policy'
+import { routes } from '@/utils/routes'
 
 const PolicyCard = ({
   id,
@@ -22,7 +23,7 @@ const PolicyCard = ({
   className,
 }: PolicyCardProps): ReactElement => {
   const router = useRouter()
-  const handleClick = () => router.push(`/policy/${id}`)
+  const handleClick = () => router.push(routes.policyDetail(id))
   return (
     <div
       role="button"

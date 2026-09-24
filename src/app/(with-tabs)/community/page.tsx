@@ -18,6 +18,7 @@ import CommunityPost from '@/components/features/community/community-post-list'
 import { useRecentSearches } from '@/hooks/useRecentSearches'
 import { useCommunityTags } from '@/queries/community'
 import { useHasUnreadNotifications } from '@/queries/notification'
+import { routes } from '@/utils/routes'
 
 const Community = (): JSX.Element => {
   const router = useRouter()
@@ -36,7 +37,7 @@ const Community = (): JSX.Element => {
     if (!trimmed) return
 
     addSearch(trimmed)
-    router.push(`/community/search?keyword=${encodeURIComponent(trimmed)}`)
+    router.push(routes.communitySearch(trimmed))
   }
 
   return (

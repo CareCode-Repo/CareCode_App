@@ -1,5 +1,14 @@
 import { ImageResponse } from 'next/og'
 
+/**
+ * 빌드 시점에 한 번만 만든다.
+ *
+ * 메타데이터 파일(sitemap/robots/manifest/opengraph-image)은 파일 이름 자체가 규약이라
+ * `*.web.ts` 로 바꿔 앱 빌드에서 빼낼 수 없다 — 이름을 바꾸면 라우트는 생기지만 GET 핸들러로
+ * 이어지지 않아 405 가 된다. 대신 정적으로 고정해 `output: export` 와 양립시킨다.
+ */
+export const dynamic = 'force-static'
+
 export const alt = '맘편한 — 부모와 자녀를 위한 육아 정보 플랫폼'
 export const size = { width: 1200, height: 630 }
 export const contentType = 'image/png'

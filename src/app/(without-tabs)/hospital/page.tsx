@@ -13,6 +13,7 @@ import PopularSection from '@/components/features/facility/PopularSection'
 import { useGeolocation } from '@/hooks/useGeolocation'
 import { useHospitals, useNearbyHospitals, usePopularHospitals } from '@/queries/hospital'
 import { HOSPITAL_GRADES, HospitalGrade } from '@/types/apis/hospital'
+import { routes } from '@/utils/routes'
 
 const RADIUS_KM = 3
 
@@ -66,7 +67,7 @@ const HospitalPage = (): ReactElement => {
           name: item.name,
           subtitle: item.address,
         }))}
-        onSelect={(id) => router.push(`/hospital/${id}`)}
+        onSelect={(id) => router.push(routes.hospitalDetail(id))}
       />
 
       <Input
@@ -137,7 +138,7 @@ const HospitalPage = (): ReactElement => {
               <li key={hospital.id}>
                 <button
                   type="button"
-                  onClick={() => router.push(`/hospital/${hospital.id}`)}
+                  onClick={() => router.push(routes.hospitalDetail(hospital.id))}
                   className="flex w-full flex-col gap-2 rounded-lg border border-gray-200 bg-white p-4 text-left transition-colors hover:bg-gray-50"
                 >
                   <div className="flex items-center gap-2">

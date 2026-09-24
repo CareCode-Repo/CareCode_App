@@ -21,6 +21,7 @@ import {
   FacilityType,
   PostFacilitiesSearchBody,
 } from '@/types/apis/facility'
+import { routes } from '@/utils/routes'
 
 const PAGE_SIZE = 20
 
@@ -106,7 +107,7 @@ const FacilityPage = (): ReactElement => {
           name: item.name,
           subtitle: item.address,
         }))}
-        onSelect={(id) => router.push(`/facility/${id}`)}
+        onSelect={(id) => router.push(routes.facilityDetail(id))}
       />
 
       <form onSubmit={handleSubmit}>
@@ -171,7 +172,7 @@ const FacilityPage = (): ReactElement => {
               <li key={facility.id}>
                 <FacilityListItem
                   facility={facility}
-                  onClick={() => router.push(`/facility/${facility.id}`)}
+                  onClick={() => router.push(routes.facilityDetail(facility.id))}
                 />
               </li>
             ))}

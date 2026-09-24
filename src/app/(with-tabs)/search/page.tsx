@@ -12,6 +12,7 @@ import { useRecentSearches } from '@/hooks/useRecentSearches'
 import { useSearchPolicy } from '@/hooks/useSearchPolicy'
 import { useHasUnreadNotifications } from '@/queries/notification'
 import { usePolicyCategories, usePopularPolicies } from '@/queries/policy'
+import { routes } from '@/utils/routes'
 
 const Search = (): ReactElement => {
   const { recentSearches, removeSearch, clearAllSearches } = useRecentSearches()
@@ -71,7 +72,7 @@ const Search = (): ReactElement => {
                 size="md"
                 shape="round"
                 color="transparent"
-                onClick={() => router.push(`/policy/category/${encodeURIComponent(name)}`)}
+                onClick={() => router.push(routes.policyCategory(name))}
               >
                 {name}
               </Chip>
@@ -88,7 +89,7 @@ const Search = (): ReactElement => {
               <li key={policy.id}>
                 <button
                   type="button"
-                  onClick={() => router.push(`/policy/${policy.id}`)}
+                  onClick={() => router.push(routes.policyDetail(policy.id))}
                   className="flex w-full flex-col gap-1 px-4 py-3 text-left focus-visible:ring-2 focus-visible:ring-green-600 focus-visible:outline-none"
                 >
                   <span className="text-b1-medium line-clamp-1 text-gray-800">{policy.title}</span>

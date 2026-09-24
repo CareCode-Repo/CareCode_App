@@ -14,6 +14,7 @@ import { useMyChildren } from '@/queries/child'
 import { useHealthAlerts, useHealthRecommendations, useMyHealthRecords } from '@/queries/health'
 import { RECORD_TYPE_LABEL, RecordType } from '@/types/apis/health'
 import { formatDate } from '@/utils/date'
+import { routes } from '@/utils/routes'
 
 /** HIGH 부터 위로. 마감이 지난 접종을 아래에 두면 못 본다. */
 const PRIORITY_ORDER: Record<string, number> = { HIGH: 0, MEDIUM: 1, LOW: 2 }
@@ -92,7 +93,7 @@ const HealthRecommendationSection = (): ReactElement | null => {
             <button
               key={name}
               type="button"
-              onClick={() => router.push(`/search/policy?keyword=${encodeURIComponent(name)}`)}
+              onClick={() => router.push(routes.policySearch(name))}
               className="text-c1-regular rounded-full border border-green-600 bg-white px-3 py-1 text-green-700 focus-visible:ring-2 focus-visible:ring-green-600 focus-visible:outline-none"
             >
               {name}
@@ -193,7 +194,7 @@ const HealthPage = (): ReactElement => {
               <li key={record.id}>
                 <HealthRecordCard
                   record={record}
-                  onClick={() => router.push(`/health/${record.id}`)}
+                  onClick={() => router.push(routes.healthDetail(record.id))}
                 />
               </li>
             ))}

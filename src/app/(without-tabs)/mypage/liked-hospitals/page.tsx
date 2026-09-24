@@ -6,6 +6,7 @@ import EmptyState from '@/components/common/EmptyState'
 import ErrorView from '@/components/common/Error'
 import Layout from '@/components/common/Layout'
 import { useLikedHospitals } from '@/queries/hospital'
+import { routes } from '@/utils/routes'
 
 const LikedHospitalsContent = (): ReactElement => {
   const router = useRouter()
@@ -42,7 +43,7 @@ const LikedHospitalsContent = (): ReactElement => {
         <li key={hospital.id}>
           <button
             type="button"
-            onClick={() => router.push(`/hospital/${hospital.id}`)}
+            onClick={() => router.push(routes.hospitalDetail(hospital.id))}
             className="flex w-full flex-col gap-1 px-4.5 py-4 text-left focus-visible:ring-2 focus-visible:ring-green-600 focus-visible:outline-none"
           >
             <span className="text-b1-semibold text-gray-800">{hospital.name}</span>

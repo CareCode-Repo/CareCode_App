@@ -11,6 +11,7 @@ import Layout from '@/components/common/Layout'
 import { useMyWaitlists, useResolveWaitlist } from '@/queries/waitlist'
 import { WAITLIST_STATUS_LABEL, WaitlistEntry } from '@/types/apis/waitlist'
 import { formatDate } from '@/utils/date'
+import { routes } from '@/utils/routes'
 
 const STATUS_COLOR: Record<string, 'green' | 'yellow' | 'white'> = {
   WAITING: 'yellow',
@@ -59,6 +60,8 @@ const MyWaitlistPage = (): ReactElement => {
           <ul className="flex flex-col gap-3">
             {entries.map((entry) => {
               const isWaiting = entry.status === 'WAITING'
+              // 콜백(onClick) 안에서는 `entry.facilityId != null` 좁히기가 유지되지 않는다.
+              const { facilityId } = entry
 
               return (
                 <li
@@ -81,10 +84,10 @@ const MyWaitlistPage = (): ReactElement => {
                     {entry.waitedDays != null && ` · ${entry.waitedDays}일 경과`}
                   </span>
 
-                  {entry.facilityId != null && (
+                  {facilityId != null && (
                     <button
                       type="button"
-                      onClick={() => router.push(`/facility/${entry.facilityId}`)}
+                      onClick={() => router.push(routes.facilityDetail(facilityId))}
                       className="text-b2-semibold self-start text-green-700 underline"
                     >
                       시설 보기

@@ -13,6 +13,7 @@ import IconButton from '@/components/common/top-navbar/IconButton'
 import CommunityPost from '@/components/features/community/community-post-list'
 import { useRecentSearches } from '@/hooks/useRecentSearches'
 import { useHasUnreadNotifications } from '@/queries/notification'
+import { routes } from '@/utils/routes'
 
 export default function ClientCommunitySearchPage(): JSX.Element {
   const params = useSearchParams()
@@ -28,7 +29,7 @@ export default function ClientCommunitySearchPage(): JSX.Element {
     if (!trimmed) return
 
     addSearch(trimmed)
-    router.push(`/community/search?keyword=${encodeURIComponent(trimmed)}`)
+    router.push(routes.communitySearch(trimmed))
   }
 
   return (

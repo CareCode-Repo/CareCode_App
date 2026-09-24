@@ -1,5 +1,14 @@
 import type { MetadataRoute } from 'next'
 
+/**
+ * 빌드 시점에 한 번만 만든다.
+ *
+ * 메타데이터 파일(sitemap/robots/manifest/opengraph-image)은 파일 이름 자체가 규약이라
+ * `*.web.ts` 로 바꿔 앱 빌드에서 빼낼 수 없다 — 이름을 바꾸면 라우트는 생기지만 GET 핸들러로
+ * 이어지지 않아 405 가 된다. 대신 정적으로 고정해 `output: export` 와 양립시킨다.
+ */
+export const dynamic = 'force-static'
+
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000'
 const API_URL = process.env.NEXT_PUBLIC_API_URL
 
@@ -11,6 +20,9 @@ const MAX_PER_TYPE = 500
  * 사이트맵 때문에 빌드가 깨지면 안 되므로 실패하면 정적 경로만 내보낸다.
  */
 const fetchList = async (path: string): Promise<unknown[]> => {
+  // 앱(정적 export) 빌드에도 sitemap 라우트가 딸려 나오지만 아무도 읽지 않는다.
+  // 쓰이지 않을 결과 때문에 앱 빌드가 백엔드에 매이지 않도록 건너뛴다.
+  if (process.env.BUILD_TARGET === 'app') return []
   if (!API_URL) return []
 
   try {

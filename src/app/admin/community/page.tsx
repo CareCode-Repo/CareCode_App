@@ -9,6 +9,7 @@ import ErrorView from '@/components/common/Error'
 import { useAdminPosts, useDeleteAdminPost } from '@/queries/admin'
 import { AdminPost } from '@/types/apis/admin'
 import { formatDate } from '@/utils/date'
+import { routes } from '@/utils/routes'
 
 const AdminCommunityPage = (): ReactElement => {
   const router = useRouter()
@@ -55,7 +56,7 @@ const AdminCommunityPage = (): ReactElement => {
                   {post.category && <Chip color="green">{post.category}</Chip>}
                   <button
                     type="button"
-                    onClick={() => router.push(`/community/${post.postId}`)}
+                    onClick={() => router.push(routes.communityDetail(post.postId))}
                     className="text-b1-semibold min-w-0 flex-1 truncate text-left text-gray-800"
                   >
                     {post.title || '(제목 없음)'}

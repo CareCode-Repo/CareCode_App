@@ -24,8 +24,20 @@ const eslintConfig = [
      * flat config 는 `node_modules` 만 기본으로 건너뛴다.
      * 빌드 산출물을 빼 두지 않으면 `eslint .` 이 `.next/` 안의 생성 코드까지 훑어
      * 몇 분씩 걸린다.
+     *
+     * `android/`·`ios/` 는 네이티브 프로젝트다. 안에 웹 번들 사본(`assets/public`,
+     * `App/public`)까지 들어 있어, 빼 두지 않으면 린트가 번들된 JS 를 훑다가 죽는다.
      */
-    ignores: ['.next/**', 'out/**', 'build/**', 'coverage/**', 'next-env.d.ts'],
+    ignores: [
+      '.next/**',
+      'out/**',
+      'build/**',
+      'coverage/**',
+      'next-env.d.ts',
+      'android/**',
+      'ios/**',
+      '.app-build-stash/**',
+    ],
   },
 
   // Next.js 기본 설정
