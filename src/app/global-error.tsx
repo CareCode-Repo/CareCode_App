@@ -1,5 +1,6 @@
 'use client'
 import { ReactElement, useEffect } from 'react'
+import { reportError } from '@/utils/errorReporting'
 
 /**
  * 루트 레이아웃 자체가 터졌을 때의 마지막 그물.
@@ -16,6 +17,8 @@ const GlobalError = ({
 }): ReactElement => {
   useEffect(() => {
     console.error('앱을 시작하지 못했습니다:', error)
+    // 여기까지 왔다면 레이아웃째 죽은 것이다. 가장 급한 오류라 반드시 보고한다.
+    reportError(error, { boundary: 'root', ...(error.digest ? { digest: error.digest } : {}) })
   }, [error])
 
   return (

@@ -24,6 +24,7 @@ import {
   kakaoRegistrationResponseSchema,
   KakaoRegistrationResponse,
 } from '@/types/apis/auth'
+import { setErrorReportingUser } from '@/utils/errorReporting'
 
 // /auth/login
 export const postLogin = async (body: PostLoginBody): Promise<PostLoginResponse> => {
@@ -50,6 +51,8 @@ export function setTokens(accessToken: string, userId: string, expiresIn: number
   // 액세스 토큰은 메모리에만 둔다. 저장소에 남기면 XSS 로 그대로 읽힌다.
   accessTokenInMemory = accessToken
   sessionStorage.setItem(USER_ID_KEY, userId)
+  // 오류를 누가 겪었는지 알 수 있게 아이디만 붙인다(이메일·이름은 보내지 않는다).
+  setErrorReportingUser(userId)
   // 리프레시 토큰은 서버가 HttpOnly 쿠키로 관리하므로 JS 로는 저장하지 않는다.
   // 새로고침 후 세션 복구를 시도해야 하는지 판단할 표시만 남긴다.
   localStorage.setItem(SESSION_FLAG_KEY, '1')
@@ -88,6 +91,7 @@ export function clearTokens(): void {
   sessionStorage.removeItem(USER_ID_KEY)
   localStorage.removeItem(SESSION_FLAG_KEY)
   void clearRefreshToken()
+  setErrorReportingUser(null)
   // 예전 버전이 저장소에 남겨 둔 토큰이 있으면 함께 지운다.
   sessionStorage.removeItem('accessToken')
   localStorage.removeItem('refreshToken')

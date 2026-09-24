@@ -1,20 +1,30 @@
 'use client'
 import { usePathname, useRouter } from 'next/navigation'
 import { ReactElement, useEffect } from 'react'
+import { initErrorReporting } from '@/utils/errorReporting'
 import { isNativeApp, isAndroid, nativePlatform } from '@/utils/native'
 
 /** 탭바가 있는 최상위 화면들. 여기서 뒤로 가기를 누르면 앱을 내린다. */
 const ROOT_PATHS = ['/', '/home', '/community', '/chat', '/search', '/mypage']
 
 /**
- * 네이티브 셸과 웹 화면을 이어 주는 초기화.
+ * 앱이 뜰 때 한 번 해 둘 것들.
  *
- * 웹에서는 아무 일도 하지 않는다(플러그인이 없으므로 부르면 터진다). 플러그인은 전부
- * **지연 import** 한다 — 정적으로 불러오면 브라우저 번들에 네이티브 전용 코드가 실린다.
+ * 대부분은 네이티브 셸과 웹 화면을 이어 주는 일이라 웹에서는 건너뛴다(플러그인이 없으므로
+ * 부르면 터진다). 플러그인은 전부 **지연 import** 한다 — 정적으로 불러오면 브라우저 번들에
+ * 네이티브 전용 코드가 실린다.
+ *
+ * 오류 보고만은 웹·앱 양쪽에서 켠다. 여기가 앱에서 가장 먼저 도는 클라이언트 컴포넌트라,
+ * 늦게 켜면 부팅 중에 난 오류를 놓친다.
  */
-const NativeBootstrap = ({ children }: { children: React.ReactNode }): ReactElement => {
+const AppBootstrap = ({ children }: { children: React.ReactNode }): ReactElement => {
   const router = useRouter()
   const pathname = usePathname()
+
+  // 오류 보고. DSN 이 없으면 SDK 를 불러오지도 않는다.
+  useEffect(() => {
+    initErrorReporting()
+  }, [])
 
   // 스플래시 내리기 · 상태바 · 키보드. 앱이 뜬 뒤 한 번만.
   useEffect(() => {
@@ -67,4 +77,4 @@ const NativeBootstrap = ({ children }: { children: React.ReactNode }): ReactElem
   return <>{children}</>
 }
 
-export default NativeBootstrap
+export default AppBootstrap

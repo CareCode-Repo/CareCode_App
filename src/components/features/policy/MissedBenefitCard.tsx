@@ -2,6 +2,7 @@ import clsx from 'clsx'
 import { ReactElement } from 'react'
 import { getPolicyApplyUrl } from '@/apis/policy'
 import Chip from '@/components/common/Chip'
+import ExternalLink from '@/components/common/ExternalLink'
 import { MissedBenefit } from '@/types/apis/policy'
 import { formatAmount, formatMonths } from '@/utils/money'
 
@@ -61,14 +62,12 @@ const MissedBenefitCard = ({ benefit, onDetailClick }: MissedBenefitCardProps): 
       )}
 
       {benefit.claimable && (
-        <a
+        <ExternalLink
           href={getPolicyApplyUrl(benefit.policyId)}
-          target="_blank"
-          rel="noreferrer"
           className="text-b1-semibold mt-1 rounded-lg bg-green-600 py-2.5 text-center text-white transition-colors hover:bg-green-700"
         >
           지금 신청하기
-        </a>
+        </ExternalLink>
       )}
     </article>
   )

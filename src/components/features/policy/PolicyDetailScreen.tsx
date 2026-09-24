@@ -2,6 +2,7 @@
 import { ReactElement, useEffect } from 'react'
 import { getPolicyApplyUrl, postPolicyView } from '@/apis/policy'
 import Chip from '@/components/common/Chip'
+import ExternalLink from '@/components/common/ExternalLink'
 import Layout from '@/components/common/Layout'
 import Separator from '@/components/common/Separator'
 import BenefitAmountReport from '@/components/features/policy/BenefitAmountReport'
@@ -133,14 +134,12 @@ const PolicyDetailScreen = ({ id }: { id?: string }): ReactElement => {
           이 전환이 "지원금을 실제로 찾아줬는지" 를 보여주는 유일한 지표다.
         */}
         {policy.websiteUrl ? (
-          <a
+          <ExternalLink
             href={getPolicyApplyUrl(policyId)}
-            target="_blank"
-            rel="noreferrer"
             className="text-t1-semibold block w-full rounded-xl bg-green-600 py-4.5 text-center text-gray-100 transition-colors hover:bg-green-700"
           >
             신청하기
-          </a>
+          </ExternalLink>
         ) : (
           <div className="text-t1-semibold w-full rounded-xl bg-gray-200 py-4.5 text-center text-gray-400">
             온라인 신청 경로 없음

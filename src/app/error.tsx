@@ -1,6 +1,7 @@
 'use client'
 import { ReactElement, useEffect } from 'react'
 import ErrorView from '@/components/common/Error'
+import { reportError } from '@/utils/errorReporting'
 
 /**
  * 앱 전역 에러 바운더리.
@@ -15,6 +16,8 @@ const GlobalError = ({
 }): ReactElement => {
   useEffect(() => {
     console.error('처리되지 않은 오류:', error)
+    // digest 는 서버가 남긴 같은 오류의 식별자다. 서버 로그와 맞춰 보려면 필요하다.
+    reportError(error, { boundary: 'page', ...(error.digest ? { digest: error.digest } : {}) })
   }, [error])
 
   return (
