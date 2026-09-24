@@ -1,0 +1,53 @@
+# 웹 저장소(CareCode_FE)에서 밀린 변경을 찾아 이슈로 알린다.
+#
+# 이 저장소는 CareCode_FE 에서 갈라져 나왔고 화면·API 코드는 여전히 대부분 같다. 웹에서
+# 고친 버그가 앱으로 자동으로 오지 않으므로 누군가 옮겨야 하는데, 처음 몇 주는 기억하지만
+# 곧 잊는다. 그러면 같은 버그가 앱에만 남는다 — 그리고 그 사실을 아무도 모른다.
+#
+# 기준점은 `.upstream-sync` 의 ref 다. 옮긴 뒤에는 그 값을 올려 함께 커밋한다.
+name: 웹 저장소 변경 감시
+
+on:
+  schedule:
+    # 매주 월요일 09:00 KST. 주 시작에 한 번 보면 충분하고, 더 자주 알리면 무시하게 된다.
+    - cron: '0 0 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  drift:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      # 밀린 변경이 있으면 종료 코드 1 이다. 그건 "실패" 가 아니라 분기 신호다.
+      - name: 밀린 변경 확인
+        id: check
+        continue-on-error: true
+        run: node scripts/check-upstream.mjs --github
+
+      - name: 이슈로 알리기
+        if: steps.check.outputs.drift == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TITLE: '웹 저장소(CareCode_FE)에서 밀린 변경이 있습니다'
+          BODY: ${{ steps.check.outputs.body }}
+        run: |
+          set -euo pipefail
+
+          # 같은 이슈를 매주 새로 만들면 금방 무시하게 된다. 열려 있으면 본문만 갱신한다.
+          existing=$(gh issue list --state open --search "\"$TITLE\" in:title" --json number --jq '.[0].number // empty')
+
+          if [ -n "$existing" ]; then
+            gh issue edit "$existing" --body "$BODY"
+            echo "기존 이슈 #$existing 갱신"
+          else
+            gh issue create --title "$TITLE" --body "$BODY"
+          fi

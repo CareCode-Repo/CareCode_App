@@ -1,0 +1,14 @@
+# 이 저장소는 CareCode_FE 에서 갈라져 나왔다.
+#
+# 화면·API 코드는 원래 한 벌이었고 지금도 대부분 같다. 그래서 웹에서 고친 버그가 앱으로
+# 자동으로 오지 않는다 — 옮겨야 한다. 무엇을 어디까지 옮겼는지 사람 기억에 맡기면 반드시
+# 놓치므로, "여기까지 반영했다" 는 지점을 이 파일에 적어 둔다.
+#
+# .github/workflows/upstream-drift.yml 이 주기적으로 이 값과 CareCode_FE 의 main 을 비교해
+# 밀린 것이 있으면 이슈로 알린다.
+#
+# 반영한 뒤에는 ref 를 그때의 CareCode_FE main 커밋으로 올리고 함께 커밋한다.
+
+repo=CareCode-Repo/CareCode_FE
+branch=main
+ref=99ae9c3794b13bb11c060ff4f149bb1afead68e7

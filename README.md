@@ -14,6 +14,10 @@ CareCode 백엔드(Spring Boot)의 REST API를 소비합니다.
 앱 빌드·자격증명·스토어 제출은 **[docs/앱-빌드와-배포.md](docs/앱-빌드와-배포.md)** 에
 따로 정리돼 있습니다. 이 문서는 화면과 API 쪽 규약을 다룹니다.
 
+> 이 저장소는 [CareCode_FE](https://github.com/CareCode-Repo/CareCode_FE) 에서 갈라져
+> 나왔습니다. 웹에서 고친 것이 앱으로 자동으로 오지 않으므로 `.upstream-sync` 로 반영
+> 지점을 관리하고, 매주 밀린 변경을 이슈로 알립니다. 절차는 위 문서의 "웹 저장소와의 관계".
+
 ## 기술 스택
 
 | 영역       | 사용 기술                          |
@@ -489,3 +493,8 @@ Vitest + Testing Library (jsdom) 로 세 층을 덮습니다.
 
 - `.husky/commit-msg` — 커밋 메시지 형식 검사
 - `.husky/pre-commit` — `npm run lint`
+
+## 라이선스
+
+이 프로젝트의 소스 코드는 **MIT 라이선스**를 따릅니다. Copyright (c) 2025-2026 CareCode.
+전문은 [LICENSE](LICENSE) 파일에 있습니다.
