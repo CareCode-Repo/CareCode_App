@@ -1,5 +1,45 @@
 apply plugin: 'com.android.application'
 
+/**
+ * 릴리스 서명 설정.
+ *
+ * 구글 플레이에 올리는 파일은 반드시 서명돼 있어야 하고, **같은 키로 계속 서명해야 한다** —
+ * 키를 잃으면 그 앱을 다시는 업데이트할 수 없다(패키지 이름을 바꿔 새 앱으로 올려야 한다).
+ * 그래서 키스토어와 비밀번호는 저장소에 넣지 않고 밖에서 받는다.
+ *
+ * 두 가지 경로를 본다.
+ *   1. `android/keystore.properties` — 손으로 빌드할 때. 형식은 keystore.properties.example 참고
+ *   2. 환경변수 — CI 에서. CARECODE_KEYSTORE_{PATH,PASSWORD,ALIAS,KEY_PASSWORD}
+ *
+ * 둘 다 없으면 서명 설정 없이 빌드한다. 디버그 빌드와 `assembleRelease` 검증은 그대로
+ * 되고, 서명되지 않은 결과물은 스토어가 받아 주지 않으니 사고로 이어지지 않는다.
+ */
+def keystorePropertiesFile = rootProject.file('keystore.properties')
+def keystoreConfig = [:]
+
+if (keystorePropertiesFile.exists()) {
+    def props = new Properties()
+    keystorePropertiesFile.withInputStream { props.load(it) }
+    keystoreConfig = [
+        path    : props['storeFile'],
+        password: props['storePassword'],
+        alias   : props['keyAlias'],
+        keyPass : props['keyPassword'],
+    ]
+} else if (System.getenv('CARECODE_KEYSTORE_PATH')) {
+    keystoreConfig = [
+        path    : System.getenv('CARECODE_KEYSTORE_PATH'),
+        password: System.getenv('CARECODE_KEYSTORE_PASSWORD'),
+        alias   : System.getenv('CARECODE_KEYSTORE_ALIAS'),
+        keyPass : System.getenv('CARECODE_KEYSTORE_KEY_PASSWORD'),
+    ]
+}
+
+def hasKeystore = keystoreConfig.path && file(keystoreConfig.path).exists()
+if (!hasKeystore) {
+    logger.lifecycle('키스토어가 없어 릴리스 빌드가 서명되지 않는다. 스토어 업로드 전 android/keystore.properties 를 채울 것.')
+}
+
 android {
     namespace = "com.carecode.app"
     compileSdk = rootProject.ext.compileSdkVersion
@@ -16,10 +56,28 @@ android {
             ignoreAssetsPattern = '!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~'
         }
     }
+    signingConfigs {
+        if (hasKeystore) {
+            release {
+                storeFile file(keystoreConfig.path)
+                storePassword keystoreConfig.password
+                keyAlias keystoreConfig.alias
+                keyPassword keystoreConfig.keyPass
+            }
+        }
+    }
     buildTypes {
         release {
+            /**
+             * R8 축소는 꺼 둔다(Capacitor 기본값).
+             * 플러그인들이 리플렉션으로 불려서, 규칙 없이 켜면 빌드는 되고 기기에서만
+             * 조용히 깨진다. 켜려면 플러그인마다 keep 규칙을 확인한 뒤에 할 것.
+             */
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            if (hasKeystore) {
+                signingConfig signingConfigs.release
+            }
         }
     }
 }

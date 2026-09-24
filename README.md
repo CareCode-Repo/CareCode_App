@@ -1,7 +1,18 @@
-# CareCode FE (맘편한)
+# CareCode App (맘편한)
 
 부모와 자녀를 위한 육아 정보 플랫폼 "맘편한"의 프론트엔드입니다.
-CareCode 백엔드(Spring Boot)의 REST API를 소비하는 모바일 우선 웹 앱입니다.
+CareCode 백엔드(Spring Boot)의 REST API를 소비합니다.
+
+**하나의 소스에서 웹과 네이티브 앱(Android · iOS)을 모두 만듭니다.** 화면 코드는 한 벌이고,
+갈라지는 것은 빌드 설정과 몇 군데의 환경 분기뿐입니다.
+
+| | 웹 | 앱 |
+| --- | --- | --- |
+| 명령 | `npm run build` | `npm run build:app` |
+| 결과물 | 서버가 있는 Next 앱 | 정적 파일 묶음 → WebView 에 동봉 |
+
+앱 빌드·자격증명·스토어 제출은 **[docs/앱-빌드와-배포.md](docs/앱-빌드와-배포.md)** 에
+따로 정리돼 있습니다. 이 문서는 화면과 API 쪽 규약을 다룹니다.
 
 ## 기술 스택
 
@@ -77,7 +88,13 @@ npm 에서는 우연히 동작하지만 pnpm·yarn PnP 로 옮기거나 상위 �
 토큰을 JS 로 읽을 수 있는 저장소에 두지 않는 것이 원칙입니다.
 
 - **액세스 토큰**: 모듈 메모리(`src/apis/auth.ts`)에만 둡니다. 저장소에 남기면 XSS 로 그대로 읽힙니다.
-- **리프레시 토큰**: 서버가 `HttpOnly` 쿠키로 심습니다(`Path=/auth`). 프런트는 값을 알지도, 다루지도 않습니다.
+- **리프레시 토큰**: 웹에서는 서버가 `HttpOnly` 쿠키로 심습니다(`Path=/auth`). 프런트는 값을 알지도,
+  다루지도 않습니다. **앱에서는 그럴 수 없습니다** — WebView 의 출처가
+  `https://localhost`(Android) / `capacitor://localhost`(iOS) 라서 API 서버로 가는 쿠키가
+  서드파티 쿠키가 되고, iOS WKWebView 가 이를 기본 차단합니다. 그래서 앱만 응답 본문의 토큰을
+  받아 Keychain / EncryptedSharedPreferences 에 보관하고 갱신 요청에 실어 보냅니다
+  (`src/apis/session.ts`). 서버가 갱신마다 토큰을 **교체**하므로 새 토큰 저장을 기다립니다 —
+  던져 두면 그 직후 앱이 종료됐을 때 다음 실행에서 이유 없이 로그아웃됩니다.
 - **새로고침**: 메모리가 비므로 `<SessionBootstrap>` 이 부팅 시 갱신을 한 번 시도해 세션을 복구합니다.
   복구가 끝날 때까지 하위 화면 렌더를 미뤄 불필요한 401 을 막습니다.
 - **401 처리**: 인터셉터가 갱신 후 원 요청을 한 번만 재시도합니다. 동시 요청이 여러 개 401 을 받아도
@@ -356,7 +373,19 @@ null 만으로 판단하면 "비우기" 와 "건드리지 않기" 를 구분할 
 서버 설정 문제가 수신처 문제보다 **먼저** 안내됩니다 — 둘 다 문제인데 "번호를 등록하세요" 라고
 하면 사용자가 등록하고도 알림을 받지 못합니다.
 
-### 웹 푸시는 설정이 있을 때만 켜집니다
+### 푸시는 웹과 앱이 다른 길로 갑니다
+
+화면은 `src/apis/push.ts` 하나만 봅니다. 그 안에서 웹(브라우저 Notification + 서비스 워커)과
+앱(네이티브 FCM, `src/apis/pushNative.ts`)이 갈립니다.
+
+앱에서 `@capacitor/push-notifications` 대신 `@capacitor-firebase/messaging` 을 쓰는 이유:
+서버가 FCM 으로 쏘는데(`PushNotificationSender`) 전자는 iOS 에서 **APNs 원시 토큰**을 줍니다.
+그 토큰을 FCM 에 넣으면 발송이 실패해 안드로이드만 되고 iOS 는 조용히 안 오는 상태가 됩니다.
+
+알림을 **탭해서** 앱이 열린 경우도 받습니다. 웹은 서비스 워커가 알림함을 열어 주지만
+(`firebase-messaging-sw.js` 의 `notificationclick`) 앱에는 그 서비스 워커가 없습니다.
+
+아래는 웹 쪽 이야기입니다.
 
 `NEXT_PUBLIC_FIREBASE_*` 와 VAPID 키가 모두 있어야 푸시 기능이 동작합니다. 하나라도 비면
 `isPushConfigured()` 가 false 를 반환하고, 설정 화면은 푸시를 잠근 채 등록 버튼을 감춥니다.
@@ -396,11 +425,16 @@ import 하면 SDK 가 모든 페이지 첫 로딩에 실립니다. 푸시를 설
 
 ```bash
 npm run dev        # 개발 서버 (turbopack)
-npm run build      # 프로덕션 빌드
+npm run build      # 웹 프로덕션 빌드
 npm run lint       # ESLint + Prettier (설정 파일 포함 전체)
 npm run lint:fix   # 자동 수정
 npm run typecheck  # tsc --noEmit
 npm test           # Vitest
+
+npm run build:app  # 앱용 정적 빌드 (out/)
+npm run app:sync   # build:app + 네이티브 프로젝트로 복사
+npm run app:android  # app:sync + Android Studio 열기
+npm run app:ios      # app:sync + Xcode 열기 (맥에서만)
 ```
 
 `next lint` 는 Next 15.3 에서 deprecated 되어 16 에서 제거되므로 `eslint .` 를 직접 씁니다.
@@ -410,10 +444,18 @@ npm test           # Vitest
 더해 다섯 단계입니다. 계약 테스트가 통과해도 서버 컴포넌트 경계 문제로 빌드가 깨질 수 있어
 빌드를 따로 둡니다.
 
-### 개발 전용 화면
+### 확장자로 라우트 걸러내기
 
-`*.dev.tsx` 확장자를 쓴 페이지는 개발 서버에서만 라우트로 잡히고 프로덕션 번들에서 제외됩니다
-(`next.config.ts` 의 `pageExtensions`). 컴포넌트 갤러리 `/component-test` 가 이 방식입니다.
+`next.config.ts` 의 `pageExtensions` 로 빌드마다 포함할 라우트를 가릅니다.
+
+- `*.dev.tsx` — 개발 서버에서만. 컴포넌트 갤러리 `/component-test` 가 이 방식입니다.
+- `*.web.tsx` — 서버가 있어야 도는 라우트. **앱 빌드에서 통째로 빠집니다.**
+  `/policy/[id]` 같은 동적 상세 주소가 여기 해당합니다. 정적 export 는 `[id]` 에 들어갈 값을
+  빌드 시점에 전부 알아야 하는데, 임의의 게시글·지원금 id 를 미리 알 수 없기 때문입니다.
+
+앱 안에서의 이동은 언제나 `src/utils/routes.ts` 를 거쳐 쿼리 주소(`/policy/detail?id=`)로
+갑니다. 두 주소가 같은 화면 컴포넌트를 렌더합니다 — 자세한 내용은
+[docs/앱-빌드와-배포.md](docs/앱-빌드와-배포.md) 참고.
 
 ### 테스트
 

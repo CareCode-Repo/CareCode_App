@@ -36,7 +36,22 @@ jobs:
         run: npm test
 
       # 스키마 계약 테스트가 통과해도 빌드가 깨질 수 있다(서버 컴포넌트 경계 등).
-      - name: Build
+      - name: Build (web)
         run: npm run build
         env:
           NEXT_PUBLIC_API_URL: http://localhost:8080
+
+      # 웹 빌드가 통과해도 앱 빌드는 깨질 수 있다.
+      # 동적 라우트(`[id]`)를 새로 만들면 정적 export 가 "미리 그릴 값을 모른다" 며 멈추는데,
+      # 웹 빌드는 그런 라우트를 아무 문제 없이 받아들인다. 여기서만 드러난다.
+      - name: Build (app)
+        if: always()
+        run: npm run build:app
+        env:
+          NEXT_PUBLIC_API_URL: http://localhost:8080
+
+      # 앱 빌드는 웹 전용 파일을 잠시 비켜 뒀다가 되돌린다(scripts/build-app.mjs).
+      # 되돌리지 못한 채 끝났다면 작업 트리가 더럽다 — 조용히 지나가면 안 된다.
+      - name: 앱 빌드가 작업 트리를 건드리지 않았는지
+        if: always()
+        run: git diff --exit-code

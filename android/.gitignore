@@ -53,9 +53,11 @@ captures/
 .idea/navEditor.xml
 
 # Keystore files
-# Uncomment the following lines if you do not want to check your keystore files in.
-#*.jks
-#*.keystore
+# 키스토어와 그 비밀번호는 저장소에 넣지 않는다. 유출되면 우리 이름으로 서명된 앱을
+# 누구나 만들 수 있고, 키를 잃으면 앱을 다시는 업데이트할 수 없다.
+*.jks
+*.keystore
+keystore.properties
 
 # External native build folder generated in Android Studio 2.2 and later
 .externalNativeBuild
