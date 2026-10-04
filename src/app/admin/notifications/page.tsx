@@ -121,7 +121,7 @@ const AdminNotificationsPage = (): ReactElement => {
                 </div>
 
                 <p className="text-b2-regular line-clamp-2 text-gray-600">{notification.message}</p>
-                <span className="text-c1-regular text-gray-500">
+                <span className="text-c1-regular text-gray-700">
                   {`대상 ${notification.userId ?? '-'} · ${formatDate(notification.createdAt, 'MM.dd HH:mm')}`}
                 </span>
 

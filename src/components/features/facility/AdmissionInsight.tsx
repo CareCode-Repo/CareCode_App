@@ -59,7 +59,7 @@ const AdmissionInsight = ({ facilityId, childAgeMonths }: AdmissionInsightProps)
                 {`신뢰도 ${CONFIDENCE_LABEL[forecast.confidence] ?? forecast.confidence}`}
               </Chip>
             )}
-            <span className="text-c1-regular text-gray-500">
+            <span className="text-c1-regular text-gray-700">
               {`${forecast.observationDays}일 / ${forecast.observationCount}회 관측`}
             </span>
           </div>
@@ -93,25 +93,25 @@ const AdmissionInsight = ({ facilityId, childAgeMonths }: AdmissionInsightProps)
           <>
             <div className="flex gap-4">
               <div className="flex flex-col">
-                <span className="text-c1-regular text-gray-500">중앙값</span>
+                <span className="text-c1-regular text-gray-700">중앙값</span>
                 <span className="text-t2-semibold text-gray-900">
                   {formatWaitDays(stats.medianWaitDays)}
                 </span>
               </div>
               <div className="flex flex-col">
-                <span className="text-c1-regular text-gray-500">평균</span>
+                <span className="text-c1-regular text-gray-700">평균</span>
                 <span className="text-b1-medium text-gray-700">
                   {formatWaitDays(stats.averageWaitDays)}
                 </span>
               </div>
               <div className="flex flex-col">
-                <span className="text-c1-regular text-gray-500">최대</span>
+                <span className="text-c1-regular text-gray-700">최대</span>
                 <span className="text-b1-medium text-gray-700">
                   {formatWaitDays(stats.maxWaitDays)}
                 </span>
               </div>
             </div>
-            <span className="text-c1-regular text-gray-500">
+            <span className="text-c1-regular text-gray-700">
               {`입소까지 간 ${stats.admittedSamples}건 기준`}
             </span>
           </>

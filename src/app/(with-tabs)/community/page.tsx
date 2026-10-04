@@ -171,7 +171,7 @@ const Community = (): JSX.Element => {
 
             <div
               ref={loadMoreRef}
-              className="text-c1-regular flex items-center justify-center bg-white py-3 text-gray-500"
+              className="text-c1-regular flex items-center justify-center bg-white py-3 text-gray-700"
               aria-live="polite"
             >
               {hasNextPage ? (

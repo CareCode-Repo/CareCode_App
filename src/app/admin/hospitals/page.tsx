@@ -57,7 +57,7 @@ const AdminHospitalsPage = (): ReactElement => {
                 {hospital.address && (
                   <span className="text-b2-regular truncate text-gray-600">{hospital.address}</span>
                 )}
-                <span className="text-c1-regular text-gray-500">
+                <span className="text-c1-regular text-gray-700">
                   {hospital.latitude != null && hospital.longitude != null
                     ? '좌표 있음'
                     : '좌표 없음 · 지도·주변 검색에서 빠져요'}

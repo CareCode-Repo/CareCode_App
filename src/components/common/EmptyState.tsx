@@ -20,9 +20,11 @@ const EmptyState = ({
   return (
     <div className="flex flex-col items-center justify-center gap-3 px-6 py-16 text-center">
       {icon}
-      <p className="text-t2-semibold text-gray-800">{title}</p>
+      {/* 빈 화면에서 이 문장이 그 화면의 제목 역할을 한다. 스크린리더도 그렇게 읽어야 한다. */}
+      <h2 className="text-t2-semibold text-gray-800">{title}</h2>
       {description && (
-        <p className="text-b1-regular whitespace-pre-line text-gray-600">{description}</p>
+        // gray-600 은 흰 바탕 4.61:1 이지만 회색 배경(gray-50) 위에서 4.41:1 로 미달했다.
+        <p className="text-b1-regular whitespace-pre-line text-gray-700">{description}</p>
       )}
       {actionLabel && onAction && (
         <Button color="green" size="small" className="mt-3 w-auto px-6" onClick={onAction}>

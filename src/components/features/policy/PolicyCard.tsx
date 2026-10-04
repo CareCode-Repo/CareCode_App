@@ -25,9 +25,23 @@ const PolicyCard = ({
   const router = useRouter()
   const handleClick = () => router.push(routes.policyDetail(id))
   return (
+    /*
+      role 만 button 이고 tabIndex·onKeyDown 이 없어 Tab 으로 닿지도, Enter 로 눌리지도
+      않았다. 홈의 정책 카드 열 개가 전부 키보드·스위치 컨트롤에서 막혀 있었다.
+      카드 안에 제목(h3)이 있어 button 으로 감싸면 그 구조가 사라지므로, role 은 그대로
+      두고 키보드 동작만 채운다.
+    */
     <div
       role="button"
+      tabIndex={0}
+      onKeyDown={(e) => {
+        if (e.key !== 'Enter' && e.key !== ' ') return
+        // Space 는 그대로 두면 화면이 스크롤된다.
+        e.preventDefault()
+        handleClick()
+      }}
       className={clsx(
+        'focus-visible:ring-2 focus-visible:ring-green-900 focus-visible:outline-none',
         'flex cursor-pointer flex-col rounded-lg bg-gray-100 pt-3.5 pr-3.5 pb-[1.125rem] pl-3.5 transition-colors hover:bg-gray-200',
         className,
       )}

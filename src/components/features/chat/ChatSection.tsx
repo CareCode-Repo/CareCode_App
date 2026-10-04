@@ -58,7 +58,7 @@ const ChatSection = (): ReactElement => {
       onClick={handleClick}
     >
       <div className="flex items-center gap-1.5 p-3.5">
-        <h1 className="text-t2-semibold">상담하러 가기</h1>
+        <h2 className="text-t2-semibold">상담하러 가기</h2>
         <RightArrowIcon className="size-4.5 fill-black" />
       </div>
       <div className="relative h-44 overflow-hidden bg-green-100">

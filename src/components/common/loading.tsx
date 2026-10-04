@@ -10,10 +10,16 @@ const Loading = ({ content = '로딩 중' }: LoadingProps): ReactElement => {
   useEffect(() => {
     document.body.style.overflow = 'hidden'
 
-    // 키보드 이벤트도 막기
+    /*
+      뒤 화면이 스크롤되는 것만 막는다.
+      전에는 모든 키를 preventDefault 로 삼켜서, 로딩이 떠 있는 동안 Tab 도 Esc 도 죽었다 —
+      키보드만 쓰는 사용자는 로딩이 끝날 때까지 아무 데도 갈 수 없었다.
+    */
+    const SCROLL_KEYS = [' ', 'PageUp', 'PageDown', 'Home', 'End', 'ArrowUp', 'ArrowDown']
+
     const handleKeyDown = (e: KeyboardEvent) => {
+      if (!SCROLL_KEYS.includes(e.key)) return
       e.preventDefault()
-      e.stopPropagation()
     }
 
     document.addEventListener('keydown', handleKeyDown)

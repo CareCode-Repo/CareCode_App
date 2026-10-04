@@ -56,7 +56,7 @@ const ReviewForm = ({ isPending = false, onSubmit }: ReviewFormProps): ReactElem
         maxLength={1000}
         rows={3}
         placeholder="다른 부모님께 도움이 될 경험을 남겨주세요."
-        className="text-b1-regular resize-none rounded-md border border-gray-300 p-3 text-black placeholder:text-gray-400 focus:border-green-500 focus:ring-2 focus:ring-green-600/40 focus:outline-none"
+        className="text-b1-regular resize-none rounded-md border border-gray-300 p-3 text-black placeholder:text-gray-600 focus:border-green-500 focus:ring-2 focus:ring-green-600/40 focus:outline-none"
       />
 
       <Button type="submit" color="green" size="small" disabled={!canSubmit}>

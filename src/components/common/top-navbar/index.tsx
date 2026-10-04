@@ -23,7 +23,15 @@ const TopNavBar = ({
       {/* back */}
       {hasBackButton && <BackButton onBackButtonClick={onBackButtonClick} />}
       {/* title */}
-      <div className="text-h3-bold h-8 grow content-center pl-2.5 text-black">{title}</div>
+      {/*
+        화면의 제목이다. div 로 두면 "제목으로 이동" 탐색이 성립하지 않고, 어떤 화면에는
+        heading 이 하나도 없게 된다. 제목이 없는 화면에서는 아무것도 그리지 않는다.
+      */}
+      {title ? (
+        <h1 className="text-h3-bold h-8 grow content-center pl-2.5 text-black">{title}</h1>
+      ) : (
+        <div className="h-8 grow" />
+      )}
       {/* action buttons */}
       <div className="flex items-center gap-2.5">
         {actionButtons.map((button) => (

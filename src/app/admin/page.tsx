@@ -91,7 +91,7 @@ const AdminIndexPage = (): ReactElement => {
                     className="flex items-center justify-between gap-3 border-b border-gray-200 px-4 py-3 last:border-b-0"
                   >
                     <span className="text-b2-regular truncate text-gray-800">{activity.desc}</span>
-                    <span className="text-c1-regular shrink-0 text-gray-500">{activity.time}</span>
+                    <span className="text-c1-regular shrink-0 text-gray-700">{activity.time}</span>
                   </li>
                 ))}
               </ul>

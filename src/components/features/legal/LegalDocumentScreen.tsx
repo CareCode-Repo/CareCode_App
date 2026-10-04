@@ -49,7 +49,7 @@ const LegalDocumentScreen = ({ type }: { type?: string }): ReactElement => {
       ) : (
         <>
           {version && (
-            <p className="text-c1-regular pb-3 text-gray-500">{`현재 시행 버전 ${version}`}</p>
+            <p className="text-c1-regular pb-3 text-gray-700">{`현재 시행 버전 ${version}`}</p>
           )}
           <article className="text-b1-regular whitespace-pre-wrap text-gray-800">{content}</article>
         </>

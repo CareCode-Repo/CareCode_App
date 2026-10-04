@@ -105,7 +105,7 @@ const PolicyBookmarkSection = ({
             <span className="text-b1-semibold line-clamp-2 text-gray-800">
               {bookmark.title ?? '제목 없음'}
             </span>
-            <span className="text-c1-regular text-gray-500">
+            <span className="text-c1-regular text-gray-700">
               {[bookmark.category, formatDate(bookmark.bookmarkedAt)].filter(Boolean).join(' · ')}
             </span>
           </button>
@@ -134,7 +134,7 @@ const ActivityContent = (): ReactElement => {
             key={tab.value}
             value={tab.value}
             className={clsx(
-              'text-b1-semibold flex-1 cursor-pointer py-3 text-gray-500 transition-colors',
+              'text-b1-semibold flex-1 cursor-pointer py-3 text-gray-700 transition-colors',
               'data-[state=active]:border-b-2 data-[state=active]:border-green-600 data-[state=active]:text-green-700',
             )}
           >

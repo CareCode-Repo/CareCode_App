@@ -38,10 +38,16 @@
   --color-gray-800: #424242;
   --color-gray-900: #212121;
 
-  /* 커스텀 색상 추가 */
-  --color-purple: #876bc8;
+  /*
+   * 커스텀 색상.
+   *
+   * purple·red 는 흰 글자를 올리거나 흰 바탕에 글자로 쓰는 자리가 있어서, 그 상태로
+   * WCAG AA(4.5:1)에 미달했다 — 보라 배지의 흰 글자 4.23:1, 좋아요 수의 빨강 3.62:1.
+   * 색조는 그대로 두고 명도만 내려 통과시켰다(각각 6.24:1, 5.46:1).
+   */
+  --color-purple: #6d4eb0;
   --color-blue: #2764be;
-  --color-red: #e55656;
+  --color-red: #c92a2a;
   --color-yellow: #ffe54e;
 
   --color-black: #212121;

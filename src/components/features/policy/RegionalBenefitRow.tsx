@@ -40,7 +40,7 @@ const RegionalBenefitRow = ({
         disabled={!hasDetail}
       >
         <div className="flex items-center gap-2">
-          <span className="text-b2-semibold w-5 shrink-0 text-gray-500">{rank}</span>
+          <span className="text-b2-semibold w-5 shrink-0 text-gray-700">{rank}</span>
           <span className="text-b1-semibold truncate text-gray-800">{benefit.region}</span>
           {isBase && <Chip color="green">현재 거주지</Chip>}
         </div>
@@ -61,7 +61,7 @@ const RegionalBenefitRow = ({
             <span
               className={clsx(
                 'text-b2-semibold',
-                benefit.differenceFromBase > 0 ? 'text-green-700' : 'text-gray-500',
+                benefit.differenceFromBase > 0 ? 'text-green-700' : 'text-gray-700',
               )}
             >
               {formatDifference(benefit.differenceFromBase)}

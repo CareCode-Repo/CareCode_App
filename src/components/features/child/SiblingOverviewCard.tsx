@@ -50,7 +50,7 @@ const SiblingOverviewCard = ({ onChildClick }: SiblingOverviewCardProps): ReactE
                   {child.nextVaccinationDate && ` · ${formatDate(child.nextVaccinationDate)}`}
                 </span>
               ) : (
-                <span className="text-c1-regular text-gray-500">예정된 접종 없음</span>
+                <span className="text-c1-regular text-gray-700">예정된 접종 없음</span>
               )}
             </button>
           </li>

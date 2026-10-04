@@ -104,7 +104,7 @@ const AdminPolicyManagePage = (): ReactElement => {
                 <span className="text-b2-regular text-gray-700">
                   {formatAmount(policy.benefitAmount)}
                 </span>
-                <span className="text-c1-regular text-gray-500">
+                <span className="text-c1-regular text-gray-700">
                   {`${policy.targetRegion || '전국'} · ${formatPeriod(policy.applicationStartDate, policy.applicationEndDate)}`}
                 </span>
                 <span className="text-c1-regular text-gray-400">{policy.policyCode}</span>

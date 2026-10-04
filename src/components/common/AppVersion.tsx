@@ -44,7 +44,7 @@ const AppVersion = (): ReactElement | null => {
 
   if (!label) return null
 
-  return <p className="text-c1-regular py-6 text-center text-gray-400">{`맘편한 · ${label}`}</p>
+  return <p className="text-c1-regular py-6 text-center text-gray-700">{`맘편한 · ${label}`}</p>
 }
 
 export default AppVersion

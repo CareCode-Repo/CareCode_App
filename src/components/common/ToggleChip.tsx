@@ -12,7 +12,8 @@ const ToggleChip = forwardRef<ComponentRef<typeof Toggle.Root>, ToggleChipProps>
       <Toggle.Root
         ref={ref}
         className={clsx(
-          'text-b1-medium rounded-3xl border border-gray-400 bg-gray-50 px-3 py-0.5 text-gray-700 transition-colors',
+          // 높이가 25~27px 이었다. 필터는 한 손으로 가장 자주 누르는 조작이다.
+          'text-b1-medium inline-flex min-h-11 items-center rounded-3xl border border-gray-400 bg-gray-50 px-3 py-0.5 text-gray-700 transition-colors',
           'data-[state=on]:border-green-900 data-[state=on]:bg-gray-50 data-[state=on]:text-green-900',
           className,
         )}

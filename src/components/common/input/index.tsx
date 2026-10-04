@@ -61,10 +61,17 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
           </RadixLabel>
         )}
 
-        {/* Field */}
-        <div
+        {/*
+          Field 를 label 로 둔다.
+
+          input 자체의 높이는 24px 라서, 테두리 안쪽 여백을 눌러도 포커스가 가지 않았다.
+          보이는 크기는 44px 인데 실제로 눌리는 곳은 그 절반이었다는 뜻이다.
+          label 로 감싸면 필드 어디를 눌러도 입력으로 들어간다 — 모양은 그대로다.
+        */}
+        <label
+          htmlFor={inputId}
           className={clsx(
-            'flex items-center border bg-white',
+            'flex min-h-11 items-center border bg-white',
             'focus-within:ring-2 focus-within:ring-green-600/40',
             // variant별 스타일
             {
@@ -89,7 +96,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
             maxLength={maxLength}
             placeholder={placeholder}
             className={clsx(
-              'grow text-black placeholder:text-gray-400 focus:caret-green-600 focus:outline-none',
+              'grow text-black placeholder:text-gray-600 focus:caret-green-600 focus:outline-none',
               errorText && 'placeholder:text-red',
               // variant별 스타일
               {
@@ -105,7 +112,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
           />
           {/* 아이콘 */}
           {rightIcon && <span className="flex items-center">{rightIcon}</span>}
-        </div>
+        </label>
         {/* 에러메시지 */}
         {errorText && showErrorText && (
           <div className="text-red text-b1-regular mt-2.5 flex items-center gap-1" role="alert">

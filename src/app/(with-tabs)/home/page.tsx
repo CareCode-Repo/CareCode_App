@@ -52,6 +52,7 @@ const Home = (): ReactElement => {
         <Spacer className="h-5 shrink-0" />
         <Input
           value=""
+          aria-label="지원금 검색"
           placeholder="궁금한 정책이 있으신가요?"
           rightIcon={<SearchIcon className="size-6 cursor-pointer fill-gray-400" />}
           onClick={handleSearchClick}

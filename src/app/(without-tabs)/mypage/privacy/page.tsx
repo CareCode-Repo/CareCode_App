@@ -69,13 +69,13 @@ const ConsentHistorySection = (): ReactElement => {
             </span>
             <span
               className={
-                item.granted ? 'text-b2-regular text-green-700' : 'text-b2-regular text-gray-500'
+                item.granted ? 'text-b2-regular text-green-700' : 'text-b2-regular text-gray-700'
               }
             >
               {item.granted ? '동의' : '철회'}
             </span>
           </div>
-          <span className="text-c1-regular text-gray-500">
+          <span className="text-c1-regular text-gray-700">
             {[
               item.policyVersion && `약관 ${item.policyVersion}`,
               formatDate(item.createdAt, 'yyyy.MM.dd HH:mm'),
@@ -142,7 +142,7 @@ const PrivacyPage = (): ReactElement => {
                     <span className="text-b1-medium text-gray-800">
                       {consent.displayName ?? consent.consentType}
                       {consent.required && (
-                        <span className="text-b2-regular pl-1 text-gray-500">(필수)</span>
+                        <span className="text-b2-regular pl-1 text-gray-700">(필수)</span>
                       )}
                     </span>
                     {/* 민감정보는 철회 시 기능이 즉시 막히므로 미리 알려둔다. */}
@@ -151,7 +151,7 @@ const PrivacyPage = (): ReactElement => {
                         철회하면 건강 기록 저장과 성장 곡선을 쓸 수 없어요.
                       </span>
                     )}
-                    <span className="text-c1-regular text-gray-500">
+                    <span className="text-c1-regular text-gray-700">
                       {consent.updatedAt ? `${formatDate(consent.updatedAt)} 갱신` : '기록 없음'}
                     </span>
                   </div>
@@ -166,7 +166,7 @@ const PrivacyPage = (): ReactElement => {
               ))}
             </ul>
           )}
-          <p className="text-c1-regular text-gray-500">
+          <p className="text-c1-regular text-gray-700">
             필수 항목은 서비스 이용에 반드시 필요해 해제할 수 없어요. 철회를 원하시면 탈퇴를
             진행해주세요.
             {policyVersion && ` (현재 시행 ${policyVersion})`}

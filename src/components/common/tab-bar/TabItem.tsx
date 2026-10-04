@@ -23,11 +23,16 @@ export const TabItem = ({ title, icon: Icon, url, selected }: TabItemProps): Rea
         aria-current={selected ? 'page' : undefined}
         className="flex flex-1 flex-col items-center justify-center gap-1 rounded focus-visible:ring-2 focus-visible:ring-green-600 focus-visible:outline-none"
       >
+        {/*
+          활성 색이 green-600 이었다 — 흰 바탕에서 2.41:1. 지금 어느 탭에 있는지 알려 주는
+          유일한 신호가 정작 안 읽혔다. green-900 으로 내려 6.08:1 로 올렸다.
+          아이콘도 같은 값을 쓴다(비텍스트는 3:1 이 기준이라 여유 있게 통과).
+        */}
         <Icon
-          className={clsx('size-8', selected ? 'fill-green-500' : 'fill-gray-700')}
+          className={clsx('size-8', selected ? 'fill-green-900' : 'fill-gray-700')}
           aria-hidden
         />
-        <span className={clsx('text-c1-regular', selected ? 'text-green-600' : 'text-gray-700')}>
+        <span className={clsx('text-c1-regular', selected ? 'text-green-900' : 'text-gray-700')}>
           {title}
         </span>
       </Link>

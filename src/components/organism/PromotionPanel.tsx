@@ -11,9 +11,13 @@ const PromotionPanel: React.FC = () => {
       </div>
 
       {/* 헤드라인 */}
-      <h1 className="mb-6 text-center text-lg text-white lg:mb-8 lg:text-xl">
+      {/*
+        제목(h1)은 화면마다 하나여야 한다. 여기는 데스크톱에서만 보이는 보조 영역이라
+        페이지 제목과 h1 을 다투면 "제목으로 이동" 탐색이 어긋난다.
+      */}
+      <p className="mb-6 text-center text-lg text-white lg:mb-8 lg:text-xl">
         우리 아이 케어를 위한 엄마들의 선택
-      </h1>
+      </p>
 
       {/* QR 코드 */}
       <div className="mb-6 flex h-24 w-24 items-center justify-center rounded-lg bg-white lg:mb-8 lg:h-32 lg:w-32">

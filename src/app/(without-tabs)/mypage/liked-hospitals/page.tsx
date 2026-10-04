@@ -47,7 +47,7 @@ const LikedHospitalsContent = (): ReactElement => {
             className="flex w-full flex-col gap-1 px-4.5 py-4 text-left focus-visible:ring-2 focus-visible:ring-green-600 focus-visible:outline-none"
           >
             <span className="text-b1-semibold text-gray-800">{hospital.name}</span>
-            <span className="text-c1-regular text-gray-500">
+            <span className="text-c1-regular text-gray-700">
               {[hospital.type, hospital.address].filter(Boolean).join(' · ')}
             </span>
           </button>

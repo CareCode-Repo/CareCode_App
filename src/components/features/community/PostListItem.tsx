@@ -16,7 +16,7 @@ const PostListItem = ({ post, onClick }: PostListItemProps): ReactElement => {
     >
       <span className="text-b1-semibold truncate text-gray-800">{post.title}</span>
       <span className="text-b2-regular line-clamp-2 text-gray-600">{post.content}</span>
-      <div className="text-c1-regular flex items-center gap-2 text-gray-500">
+      <div className="text-c1-regular flex items-center gap-2 text-gray-700">
         <span>{post.isAnonymous ? '익명' : post.authorName}</span>
         <span aria-hidden>·</span>
         <span>{formatDate(post.createdAt, 'MM.dd')}</span>

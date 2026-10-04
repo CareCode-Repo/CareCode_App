@@ -54,7 +54,10 @@ const NotificationPage = (): ReactElement => {
       <Layout hasTopNav title="알림" hasBackButton contentClassName="px-4.5 py-6">
         {/* 알림이 없거나 불러오지 못했을 때도 설정으로는 갈 수 있어야 한다. */}
         <div className="flex justify-end pb-3">
-          <Link href="/notification/settings" className="text-b2-semibold text-gray-600 underline">
+          <Link
+            href="/notification/settings"
+            className="text-b2-semibold inline-flex min-h-11 items-center px-2 text-gray-700 underline"
+          >
             알림 설정
           </Link>
         </div>
@@ -112,7 +115,7 @@ const NotificationPage = (): ReactElement => {
                     <button
                       type="button"
                       onClick={() => setNotificationToDelete(notification.id)}
-                      className="text-c1-regular rounded text-gray-500 underline focus-visible:ring-2 focus-visible:ring-green-600 focus-visible:outline-none"
+                      className="text-c1-regular rounded text-gray-700 underline focus-visible:ring-2 focus-visible:ring-green-600 focus-visible:outline-none"
                     >
                       삭제
                     </button>

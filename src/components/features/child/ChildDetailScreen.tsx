@@ -91,7 +91,7 @@ const ChildDetailScreen = ({ childId: rawChildId }: { childId?: string }): React
             <button
               type="button"
               onClick={() => setDeleteDialogOpen(true)}
-              className="text-b2-regular rounded text-gray-500 underline focus-visible:ring-2 focus-visible:ring-green-600 focus-visible:outline-none"
+              className="text-b2-regular rounded text-gray-700 underline focus-visible:ring-2 focus-visible:ring-green-600 focus-visible:outline-none"
             >
               삭제
             </button>
@@ -108,7 +108,7 @@ const ChildDetailScreen = ({ childId: rawChildId }: { childId?: string }): React
                 key={tab.value}
                 value={tab.value}
                 className={clsx(
-                  'text-b1-semibold flex-1 cursor-pointer py-3 text-gray-500 transition-colors',
+                  'text-b1-semibold flex-1 cursor-pointer py-3 text-gray-700 transition-colors',
                   'data-[state=active]:border-b-2 data-[state=active]:border-green-600 data-[state=active]:text-green-700',
                 )}
               >
@@ -244,7 +244,7 @@ const ChildDetailScreen = ({ childId: rawChildId }: { childId?: string }): React
                         {latestPoint.interpretation}
                       </p>
                     )}
-                    <p className="text-c1-regular text-gray-500">
+                    <p className="text-c1-regular text-gray-700">
                       백분위는 참고 지표예요. 진단은 의료진 판단을 따라주세요.
                     </p>
                   </div>

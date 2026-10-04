@@ -63,7 +63,7 @@ const ReportDialog = ({
             maxLength={1000}
             rows={3}
             placeholder="상세 내용을 알려주세요 (선택)"
-            className="text-b1-regular mt-4 w-full resize-none rounded-md border border-gray-300 p-3 text-black placeholder:text-gray-400 focus:border-green-500 focus:ring-2 focus:ring-green-600/40 focus:outline-none"
+            className="text-b1-regular mt-4 w-full resize-none rounded-md border border-gray-300 p-3 text-black placeholder:text-gray-600 focus:border-green-500 focus:ring-2 focus:ring-green-600/40 focus:outline-none"
           />
 
           <div className="mt-4 flex gap-2">

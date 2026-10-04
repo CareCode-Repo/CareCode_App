@@ -85,7 +85,7 @@ const Comment = ({
           )}
 
           <div className="flex items-center justify-between">
-            <span className="text-c1-regular text-gray-500">{comment.timestamp}</span>
+            <span className="text-c1-regular text-gray-700">{comment.timestamp}</span>
 
             {canManage && !isEditing && (
               <div className="flex items-center gap-2">
@@ -105,7 +105,7 @@ const Comment = ({
                   <button
                     type="button"
                     onClick={onDelete}
-                    className="text-c1-regular rounded text-gray-500 underline focus-visible:ring-2 focus-visible:ring-green-600 focus-visible:outline-none"
+                    className="text-c1-regular rounded text-gray-700 underline focus-visible:ring-2 focus-visible:ring-green-600 focus-visible:outline-none"
                   >
                     삭제
                   </button>

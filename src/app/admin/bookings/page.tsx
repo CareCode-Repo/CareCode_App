@@ -149,7 +149,7 @@ const AdminBookingsPage = (): ReactElement => {
                   <span className="text-b2-regular text-gray-600">
                     {`${booking.childName ?? '-'} · 신청자 ${booking.userName ?? booking.userId ?? '-'}`}
                   </span>
-                  <span className="text-c1-regular text-gray-500">
+                  <span className="text-c1-regular text-gray-700">
                     {`방문 ${formatDate(booking.startTime, 'yyyy.MM.dd HH:mm')} · 신청 ${formatDate(booking.createdAt, 'MM.dd')}`}
                   </span>
 

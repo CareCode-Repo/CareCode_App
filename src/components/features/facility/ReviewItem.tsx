@@ -52,9 +52,9 @@ const ReviewItem = ({
         <div className="flex items-center gap-1">
           <StarIcon className="fill-yellow size-4" aria-hidden />
           <span className="text-b1-semibold text-gray-800">{rating ?? '-'}</span>
-          {authorName && <span className="text-c1-regular pl-1 text-gray-500">{authorName}</span>}
+          {authorName && <span className="text-c1-regular pl-1 text-gray-700">{authorName}</span>}
         </div>
-        <span className="text-c1-regular text-gray-500">{formatDate(createdAt)}</span>
+        <span className="text-c1-regular text-gray-700">{formatDate(createdAt)}</span>
       </div>
 
       {isEditing ? (
@@ -82,7 +82,7 @@ const ReviewItem = ({
             rows={3}
             maxLength={1000}
             aria-label="리뷰 내용"
-            className="text-b1-regular resize-none rounded-md border border-gray-300 p-3 text-black placeholder:text-gray-400 focus:border-green-500 focus:ring-2 focus:ring-green-600/40 focus:outline-none"
+            className="text-b1-regular resize-none rounded-md border border-gray-300 p-3 text-black placeholder:text-gray-600 focus:border-green-500 focus:ring-2 focus:ring-green-600/40 focus:outline-none"
           />
           <div className="flex justify-end gap-2">
             <Button
@@ -123,7 +123,7 @@ const ReviewItem = ({
             <button
               type="button"
               onClick={onDelete}
-              className="text-c1-regular rounded text-gray-500 underline focus-visible:ring-2 focus-visible:ring-green-600 focus-visible:outline-none"
+              className="text-c1-regular rounded text-gray-700 underline focus-visible:ring-2 focus-visible:ring-green-600 focus-visible:outline-none"
             >
               삭제
             </button>

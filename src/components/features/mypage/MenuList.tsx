@@ -25,7 +25,8 @@ const MenuList = ({ title, items, className }: MenuListProps): ReactElement => {
             key={item.id}
             type="button"
             onClick={item.onClick}
-            className="py-2 text-left transition-colors hover:bg-gray-100"
+            // 37px 이었다. 목록이 길수록 잘못 눌렀을 때 되돌리는 비용도 크다.
+            className="min-h-11 py-3 text-left transition-colors hover:bg-gray-100"
           >
             {item.title}
           </button>

@@ -68,7 +68,7 @@ const ConsentRequiredDialog = ({
             {description}
           </Dialog.Description>
 
-          <p className="text-c1-regular mt-3 text-gray-500">
+          <p className="text-c1-regular mt-3 text-gray-700">
             동의는 마이페이지 &gt; 개인정보 설정에서 언제든 철회할 수 있어요.
           </p>
 

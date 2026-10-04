@@ -44,6 +44,7 @@ const Search = (): ReactElement => {
       <form onSubmit={handleSubmit}>
         <Input
           value={inputValue}
+          aria-label="육아 정보 검색"
           placeholder="검색어를 입력하세요"
           onChange={handleInputChange}
           rightIcon={
@@ -94,7 +95,7 @@ const Search = (): ReactElement => {
                 >
                   <span className="text-b1-medium line-clamp-1 text-gray-800">{policy.title}</span>
                   {policy.category && (
-                    <span className="text-c1-regular text-gray-500">{policy.category}</span>
+                    <span className="text-c1-regular text-gray-700">{policy.category}</span>
                   )}
                 </button>
               </li>

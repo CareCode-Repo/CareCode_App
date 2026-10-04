@@ -30,7 +30,13 @@ const IconButton = ({
       onClick={onClick}
       aria-label={ariaLabel}
       className={clsx(
-        'inline-block rounded focus-visible:ring-2 focus-visible:ring-green-600 focus-visible:ring-offset-2 focus-visible:outline-none',
+        /*
+         * 아이콘은 24~32px 이지만 누를 수 있는 영역은 44px 이상이어야 한다(WCAG 2.5.5).
+         * 뒤로 가기·알림·검색·프로필 수정이 전부 이 컴포넌트를 거치므로 여기 한 곳에서 넓힌다.
+         * 아이콘 자체는 그대로라 보이는 모습은 바뀌지 않는다.
+         */
+        'inline-flex min-h-11 min-w-11 items-center justify-center rounded',
+        'focus-visible:ring-2 focus-visible:ring-green-600 focus-visible:ring-offset-2 focus-visible:outline-none',
         className,
       )}
     >

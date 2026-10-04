@@ -135,7 +135,7 @@ const CommunityPostDetailScreen = ({ id }: { id?: string }): JSX.Element => {
                 {post.title}
               </div>
 
-              <div className="text-c1-regular flex items-center gap-1 text-gray-500">
+              <div className="text-c1-regular flex items-center gap-1 text-gray-700">
                 <div id="author">{post.isAnonymous ? '익명' : post.authorName}</div>
                 <div className="h-2 w-[0.0625rem] bg-gray-200" />
                 <div id="createAt">{formatDate(post.createdAt, 'MM/dd HH:mm')}</div>

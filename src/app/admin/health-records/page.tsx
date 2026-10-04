@@ -60,7 +60,7 @@ const AdminHealthRecordsPage = (): ReactElement => {
                   <span className="text-b1-semibold truncate text-gray-800">{record.title}</span>
                 </div>
 
-                <span className="text-c1-regular text-gray-500">
+                <span className="text-c1-regular text-gray-700">
                   {`기록 ${formatDate(record.recordDate)} · 사용자 ${record.userId ?? '-'}`}
                 </span>
 

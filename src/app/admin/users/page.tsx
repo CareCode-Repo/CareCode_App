@@ -76,16 +76,16 @@ const AdminUsersPage = (): ReactElement => {
                   <span className="text-b2-regular truncate text-gray-600">
                     {user.email || '이메일 없음'}
                   </span>
-                  <span className="text-c1-regular text-gray-500">
+                  <span className="text-c1-regular text-gray-700">
                     {`가입 ${formatDate(user.createdAt)} · 최근 로그인 ${formatDate(user.lastLoginAt)}`}
                   </span>
 
                   {isWithdrawn ? (
-                    <p className="text-c1-regular text-gray-500">
+                    <p className="text-c1-regular text-gray-700">
                       {`${formatDate(user.deletedAt)} 탈퇴한 계정이에요.`}
                     </p>
                   ) : isSelf ? (
-                    <p className="text-c1-regular text-gray-500">
+                    <p className="text-c1-regular text-gray-700">
                       본인 계정의 역할과 상태는 여기서 바꿀 수 없어요.
                     </p>
                   ) : (

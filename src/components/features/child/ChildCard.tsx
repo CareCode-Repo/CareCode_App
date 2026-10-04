@@ -41,7 +41,7 @@ const ChildCard = ({ child, overdueCount = 0, onClick }: ChildCardProps): ReactE
           {formatChildAge(child.birthDate)} · {formatDate(child.birthDate)}
         </span>
       </div>
-      <span className="text-b2-regular text-gray-500" aria-hidden>
+      <span className="text-b2-regular text-gray-700" aria-hidden>
         보기
       </span>
     </button>

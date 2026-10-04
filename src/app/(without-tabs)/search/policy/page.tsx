@@ -47,6 +47,7 @@ const PolicySearchPage = ({ searchParams }: PolicySearchPageProps): ReactElement
       <form onSubmit={handleSubmit}>
         <Input
           value={inputValue}
+          aria-label="지원금 검색"
           placeholder="검색어를 입력하세요"
           onChange={handleInputChange}
           rightIcon={
@@ -78,7 +79,7 @@ const PolicySearchPage = ({ searchParams }: PolicySearchPageProps): ReactElement
         )}
 
         {keyword && !isLoading && allPolicies.length === 0 && (
-          <div className="flex items-center justify-center p-4 text-gray-500">
+          <div className="flex items-center justify-center p-4 text-gray-700">
             검색 결과가 없습니다.
           </div>
         )}
@@ -95,7 +96,7 @@ const PolicySearchPage = ({ searchParams }: PolicySearchPageProps): ReactElement
         })}
 
         {isLoading && (
-          <div className="flex items-center justify-center p-4 text-gray-500">로딩 중...</div>
+          <div className="flex items-center justify-center p-4 text-gray-700">로딩 중...</div>
         )}
 
         <div ref={loadMoreRef} />

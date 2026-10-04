@@ -123,7 +123,7 @@ const AttachmentSection = ({ recordId }: AttachmentSectionProps): ReactElement =
                 >
                   {downloadingId === id ? '받는 중...' : (attachment.fileName ?? '첨부파일')}
                 </button>
-                <span className="text-c1-regular shrink-0 text-gray-500">
+                <span className="text-c1-regular shrink-0 text-gray-700">
                   {formatFileSize(attachment.fileSize)}
                 </span>
                 <button

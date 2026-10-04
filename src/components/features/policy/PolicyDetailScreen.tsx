@@ -24,7 +24,7 @@ const PolicyDetailScreen = ({ id }: { id?: string }): ReactElement => {
     return (
       <Layout hasBackButton hasTopNav title="정책 상세">
         <div className="flex grow items-center justify-center">
-          <span className="text-b1-regular text-gray-500">로딩 중...</span>
+          <span className="text-b1-regular text-gray-700">로딩 중...</span>
         </div>
       </Layout>
     )
@@ -34,7 +34,7 @@ const PolicyDetailScreen = ({ id }: { id?: string }): ReactElement => {
     return (
       <Layout hasBackButton hasTopNav title="정책 상세">
         <div className="flex grow items-center justify-center">
-          <span className="text-b1-regular text-gray-500">정책을 찾을 수 없습니다.</span>
+          <span className="text-b1-regular text-gray-700">정책을 찾을 수 없습니다.</span>
         </div>
       </Layout>
     )

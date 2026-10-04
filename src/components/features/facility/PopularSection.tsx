@@ -37,7 +37,7 @@ const PopularSection = ({ title, items, onSelect }: PopularSectionProps): ReactE
               {item.name ?? '이름 없음'}
             </span>
             {item.subtitle && (
-              <span className="text-c1-regular line-clamp-1 text-gray-500">{item.subtitle}</span>
+              <span className="text-c1-regular line-clamp-1 text-gray-700">{item.subtitle}</span>
             )}
           </button>
         ))}

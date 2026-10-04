@@ -33,7 +33,7 @@ const VaccinationItem = ({
           <span
             className={clsx(
               'text-b1-semibold truncate',
-              isCompleted ? 'text-gray-500 line-through' : 'text-gray-800',
+              isCompleted ? 'text-gray-700 line-through' : 'text-gray-800',
             )}
           >
             {schedule.vaccineName ?? schedule.vaccineType}

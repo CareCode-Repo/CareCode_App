@@ -65,7 +65,7 @@ const AdminCommunityPage = (): ReactElement => {
 
                 <p className="text-b2-regular line-clamp-2 text-gray-600">{post.content}</p>
 
-                <span className="text-c1-regular text-gray-500">
+                <span className="text-c1-regular text-gray-700">
                   {`${post.isAnonymous ? '익명' : (post.authorName ?? '알 수 없음')} · ${formatDate(post.createdAt, 'MM.dd HH:mm')} · 조회 ${post.viewCount ?? 0} · 좋아요 ${post.likeCount ?? 0}`}
                 </span>
 

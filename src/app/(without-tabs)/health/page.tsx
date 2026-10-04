@@ -58,7 +58,7 @@ const HealthAlertSection = (): ReactElement | null => {
               <span className="text-b2-regular text-gray-700">{alert.message}</span>
             )}
             {alert.dueDate && (
-              <span className="text-c1-regular text-gray-500">
+              <span className="text-c1-regular text-gray-700">
                 {formatDate(alert.dueDate)} 예정
               </span>
             )}
@@ -94,7 +94,7 @@ const HealthRecommendationSection = (): ReactElement | null => {
               key={name}
               type="button"
               onClick={() => router.push(routes.policySearch(name))}
-              className="text-c1-regular rounded-full border border-green-600 bg-white px-3 py-1 text-green-700 focus-visible:ring-2 focus-visible:ring-green-600 focus-visible:outline-none"
+              className="text-c1-regular inline-flex min-h-11 items-center rounded-full border border-green-600 bg-white px-3 py-1 text-green-900 focus-visible:ring-2 focus-visible:ring-green-600 focus-visible:outline-none"
             >
               {name}
             </button>

@@ -65,7 +65,7 @@ const AdminReportsPage = (): ReactElement => {
                   <Chip color="white">
                     {TARGET_TYPE_LABEL[report.targetType] ?? report.targetType}
                   </Chip>
-                  <span className="text-c1-regular ml-auto text-gray-500">
+                  <span className="text-c1-regular ml-auto text-gray-700">
                     {formatDate(report.createdAt, 'MM.dd HH:mm')}
                   </span>
                 </div>
