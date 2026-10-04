@@ -37,6 +37,7 @@ export const routes = {
   communitySearch: (keyword: string): string => withQuery('/community/search', { keyword }),
 
   // 어린이집·유치원
+  facilityCandidates: (): string => '/facility/candidates',
   facilityDetail: (facilityId: Id): string => withQuery('/facility/detail', { id: facilityId }),
 
   // 건강기록

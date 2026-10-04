@@ -72,6 +72,50 @@ export const CONFIDENCE_LABEL: Record<string, string> = {
   HIGH: '높음',
 }
 
+// ==================== 예측 정확도 ====================
+
+/**
+ * 서버 ForecastAccuracyResponse.Bucket 대응.
+ * "60~80% 라고 말한 건들이 실제로는 몇 번 맞았나" 한 줄.
+ */
+export const forecastBucketSchema = z.object({
+  from: z.number(),
+  to: z.number(),
+  samples: z.number().default(0),
+  actualTrue: z.number().default(0),
+  /** 표본 0이면 null */
+  actualRate: z.number().nullish(),
+})
+export type ForecastBucket = z.infer<typeof forecastBucketSchema>
+
+/**
+ * 서버 ForecastAccuracyResponse 대응.
+ *
+ * 확률만 보여주면 사용자는 그 숫자를 믿을지 판단할 근거가 없다. 과거 관측으로 같은 계산을 다시
+ * 돌려 실제와 비교한 값이라, 틀린 것까지 드러난다. 그 점이 이 데이터의 쓸모다.
+ */
+export const forecastAccuracySchema = z.object({
+  measuredAt: z.string().nullish(),
+  horizonMonths: z.number().default(0),
+  /** 검증에 쓴 예측 건수 */
+  samples: z.number().default(0),
+  facilities: z.number().default(0),
+  /** 표본에서 실제로 자리가 난 비율 (0~1) */
+  actualRate: z.number().default(0),
+  /** 낮을수록 정확. 0=완벽, 0.25=동전 던지기 */
+  brierScore: z.number().default(0),
+  baselineBrierScore: z.number().default(0),
+  /** false 면 화면에서 확률을 강조하지 않는 편이 맞다 */
+  betterThanBaseline: z.boolean().default(false),
+  /** 지금 보여주는 확률이 속한 구간의 실제 적중률. 표본이 적으면 null */
+  matchedBucket: forecastBucketSchema.nullish(),
+  calibration: z
+    .array(forecastBucketSchema)
+    .nullish()
+    .transform((v) => v ?? []),
+})
+export type ForecastAccuracy = z.infer<typeof forecastAccuracySchema>
+
 // 서버 AdmissionForecastResponse 대응
 export const admissionForecastSchema = z.object({
   facilityId: z.number().nullish(),
@@ -90,6 +134,11 @@ export const admissionForecastSchema = z.object({
     .array(z.string())
     .nullish()
     .transform((v) => v ?? []),
+  /**
+   * 이 확률이 과거에 얼마나 맞았는지.
+   * 서버는 처음부터 보내고 있었는데 이 스키마에 없어 zod 가 조용히 버리고 있었다.
+   */
+  accuracy: forecastAccuracySchema.nullish(),
 })
 export type AdmissionForecast = z.infer<typeof admissionForecastSchema>
 
@@ -138,3 +187,53 @@ export const facilityPopularitySchema = z.object({
     .transform((v) => v ?? []),
 })
 export type FacilityPopularity = z.infer<typeof facilityPopularitySchema>
+
+// ==================== 아이 기준 입소 후보 ====================
+
+// 서버 AdmissionCandidateResponse.Candidate 대응
+export const admissionCandidateSchema = z.object({
+  facilityId: z.number(),
+  facilityName: z.string(),
+  address: z.string().nullish(),
+  probability: z.number().nullish(),
+  confidence: z.string().nullish(),
+  observationCount: z.number().default(0),
+  observationDays: z.number().default(0),
+  /** 공공데이터에 적힌 현재 잔여석. 예측과 달리 지금 시점의 값이다 */
+  availableSpots: z.number().nullish(),
+  reasons: z
+    .array(z.string())
+    .nullish()
+    .transform((v) => v ?? []),
+})
+export type AdmissionCandidate = z.infer<typeof admissionCandidateSchema>
+
+/**
+ * 서버 AdmissionCandidateResponse 대응.
+ * 시설을 먼저 고르지 않아도 "어디에 들어갈 수 있나" 에 답한다.
+ */
+export const admissionCandidateListSchema = z.object({
+  region: z.string(),
+  childAgeMonths: z.number().default(0),
+  targetClass: z.string().nullish(),
+  horizonMonths: z.number().default(6),
+  targetDate: z.string().nullish(),
+  /** 지역에서 후보로 본 시설 수 */
+  evaluatedFacilities: z.number().default(0),
+  /** 관측이 모자라 확률을 내지 못한 시설 수. 숨기면 "이 동네에 몇 곳뿐인가" 로 읽힌다 */
+  notEnoughDataCount: z.number().default(0),
+  accuracy: forecastAccuracySchema.nullish(),
+  candidates: z
+    .array(admissionCandidateSchema)
+    .nullish()
+    .transform((v) => v ?? []),
+})
+export type AdmissionCandidateList = z.infer<typeof admissionCandidateListSchema>
+
+export const admissionCandidateQuerySchema = z.object({
+  region: z.string().min(1),
+  childAgeMonths: z.number().min(0),
+  horizonMonths: z.number().min(1).max(36).optional(),
+  limit: z.number().min(1).max(50).optional(),
+})
+export type AdmissionCandidateQuery = z.infer<typeof admissionCandidateQuerySchema>

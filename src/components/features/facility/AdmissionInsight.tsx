@@ -2,6 +2,7 @@
 import clsx from 'clsx'
 import { ReactElement } from 'react'
 import Chip from '@/components/common/Chip'
+import ForecastAccuracyNote from '@/components/features/facility/ForecastAccuracyNote'
 import { useAdmissionForecast, useFacilityPopularity, useWaitlistStats } from '@/queries/waitlist'
 import { CONFIDENCE_LABEL, DEMAND_LEVEL_LABEL, TREND_LABEL } from '@/types/apis/waitlist'
 
@@ -71,6 +72,9 @@ const AdmissionInsight = ({ facilityId, childAgeMonths }: AdmissionInsightProps)
               ))}
             </ul>
           )}
+
+          {/* 확률 바로 아래에 둔다. 믿을지 말지는 숫자를 본 그 자리에서 판단한다. */}
+          <ForecastAccuracyNote accuracy={forecast.accuracy} />
         </div>
       ) : (
         <p className="text-b2-regular text-gray-600">

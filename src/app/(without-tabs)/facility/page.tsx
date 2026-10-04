@@ -100,6 +100,26 @@ const FacilityPage = (): ReactElement => {
 
   return (
     <Layout hasTopNav hasBackButton title="시설 찾기" contentClassName="px-4.5 py-5">
+      {/*
+        검색은 "어디를 찾을지 아는 사람" 만 쓸 수 있다. 정작 어린이집을 알아보는 사람이 모르는 게
+        "어디를 골라야 하나" 라서, 답부터 주는 쪽을 검색창보다 위에 둔다.
+      */}
+      <button
+        type="button"
+        onClick={() => router.push(routes.facilityCandidates())}
+        className="mb-5 flex w-full items-center justify-between gap-3 rounded-xl bg-green-600 p-4 text-left focus-visible:ring-2 focus-visible:ring-gray-900 focus-visible:ring-offset-2 focus-visible:outline-none"
+      >
+        <span className="flex flex-col">
+          <span className="text-t2-semibold text-gray-900">우리 아이가 들어갈 수 있는 곳</span>
+          <span className="text-c1-regular text-gray-900">
+            동네 어린이집을 입소 가능성 순으로 보여드려요
+          </span>
+        </span>
+        <span className="text-b1-semibold shrink-0 text-gray-900" aria-hidden>
+          보기
+        </span>
+      </button>
+
       <PopularSection
         title="많이 찾는 시설"
         items={popular.map((item) => ({

@@ -1,10 +1,16 @@
 import { z } from 'zod'
 import { CareCode } from './interceptor'
 import {
+  AdmissionCandidateList,
+  admissionCandidateListSchema,
+  AdmissionCandidateQuery,
+  admissionCandidateQuerySchema,
   AdmissionForecast,
   admissionForecastQuerySchema,
   AdmissionForecastQuery,
   admissionForecastSchema,
+  forecastAccuracySchema,
+  ForecastAccuracy,
   FacilityPopularity,
   facilityPopularitySchema,
   WaitlistEntry,
@@ -72,4 +78,23 @@ export const getAdmissionForecast = async (
 export const getFacilityPopularity = async (facilityId: number): Promise<FacilityPopularity> => {
   const res = await CareCode.get(`/facilities/${facilityId}/popularity`)
   return facilityPopularitySchema.parse(res.data)
+}
+
+/**
+ * GET /facilities/forecast-accuracy - 예측이 실제로 얼마나 맞았는지 (공개)
+ *
+ * 기간별(1·3·6개월) 최신 측정 결과. 표본이 부족한 기간은 아예 목록에 없다.
+ */
+export const getForecastAccuracy = async (): Promise<ForecastAccuracy[]> => {
+  const res = await CareCode.get('/facilities/forecast-accuracy')
+  return z.array(forecastAccuracySchema).parse(res.data ?? [])
+}
+
+/** GET /facilities/admission-candidates - 아이 기준으로 들어갈 수 있는 곳 */
+export const getAdmissionCandidates = async (
+  query: AdmissionCandidateQuery,
+): Promise<AdmissionCandidateList> => {
+  const params = admissionCandidateQuerySchema.parse(query)
+  const res = await CareCode.get('/facilities/admission-candidates', { params })
+  return admissionCandidateListSchema.parse(res.data)
 }

@@ -8,7 +8,9 @@ import {
 } from '@tanstack/react-query'
 import { getAccessToken } from '@/apis/auth'
 import {
+  getAdmissionCandidates,
   getAdmissionForecast,
+  getForecastAccuracy,
   getFacilityPopularity,
   getMyWaitlists,
   getWaitlistStats,
@@ -16,8 +18,11 @@ import {
   postWaitlist,
 } from '@/apis/waitlist'
 import {
+  AdmissionCandidateList,
+  AdmissionCandidateQuery,
   AdmissionForecast,
   AdmissionForecastQuery,
+  ForecastAccuracy,
   FacilityPopularity,
   WaitlistEntry,
   WaitlistRegisterBody,
@@ -45,6 +50,17 @@ export const waitlistQueries = createQueryKeys('waitlist', {
     queryKey: ['popularity', facilityId],
     queryFn: () => getFacilityPopularity(facilityId),
   }),
+
+  /** 측정 결과는 주 1회만 갱신된다. 화면마다 다시 받을 이유가 없다. */
+  accuracy: () => ({
+    queryKey: ['forecast-accuracy'],
+    queryFn: getForecastAccuracy,
+  }),
+
+  candidates: (query: AdmissionCandidateQuery) => ({
+    queryKey: ['admission-candidates', query],
+    queryFn: () => getAdmissionCandidates(query),
+  }),
 })
 
 export const useMyWaitlists = (): UseQueryResult<WaitlistEntry[], Error> =>
@@ -64,6 +80,22 @@ export const useAdmissionForecast = (
     ...waitlistQueries.forecast(facilityId, query),
     enabled: isValidFacility(facilityId),
   })
+
+/** 입소 예측이 과거에 얼마나 맞았는지. 공개 통계라 로그인과 무관하다. */
+export const useForecastAccuracy = (): UseQueryResult<ForecastAccuracy[], Error> =>
+  useQuery({ ...waitlistQueries.accuracy(), staleTime: 60 * 60 * 1000 })
+
+/** 아이 기준 입소 후보. 지역과 월령이 모두 있어야 계산할 수 있다. */
+export const useAdmissionCandidates = (
+  query: Partial<AdmissionCandidateQuery>,
+): UseQueryResult<AdmissionCandidateList, Error> => {
+  const ready = !!query.region && query.childAgeMonths != null && query.childAgeMonths >= 0
+  return useQuery({
+    ...waitlistQueries.candidates(query as AdmissionCandidateQuery),
+    enabled: ready,
+    staleTime: 10 * 60 * 1000,
+  })
+}
 
 export const useFacilityPopularity = (
   facilityId: number,
