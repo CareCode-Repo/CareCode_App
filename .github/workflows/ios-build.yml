@@ -1,0 +1,69 @@
+# iOS 프로젝트가 실제로 빌드되는지 본다.
+#
+# 이 저장소는 윈도우에서도 개발한다. 거기서는 `cap sync ios` 로 파일을 복사하는 것까지만
+# 되고, 컴파일은 Xcode(맥)에서만 된다 — 그래서 **iOS 쪽이 깨진 줄 모르고 지나갈 수 있다.**
+# 네이티브 설정(권한·딥링크 스킴·플러그인)을 고칠 때 특히 그렇다.
+#
+# 맥 러너는 느리고 비싸서 PR 마다 돌리지 않는다. main 에 들어갈 때와 필요할 때만 본다.
+# 서명은 하지 않는다 — 인증서 없이도 "컴파일되는가" 는 확인할 수 있고, 그게 여기서 보려는 것이다.
+name: iOS 빌드
+
+on:
+  push:
+    branches: [main]
+    paths:
+      # 웹 화면만 고친 경우에는 돌릴 이유가 없다.
+      - 'ios/**'
+      - 'capacitor.config.ts'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/workflows/ios-build.yml'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - run: npm ci
+
+      # 앱이 담을 웹 자산. 이것이 없으면 Xcode 가 빈 껍데기를 빌드한다.
+      - name: 웹 자산 빌드
+        run: npm run build:app
+        env:
+          NEXT_PUBLIC_API_URL: http://localhost:8080
+
+      - name: 네이티브 프로젝트에 반영
+        run: npx cap sync ios
+
+      # Capacitor 8 은 CocoaPods 대신 Swift Package Manager 를 쓴다.
+      # 의존성 해결에 네트워크가 필요하므로 빌드와 분리해 실패 원인을 구분한다.
+      - name: Swift 패키지 받기
+        working-directory: ios/App
+        run: xcodebuild -resolvePackageDependencies -scheme App
+
+      - name: 시뮬레이터용 빌드 (서명 없음)
+        working-directory: ios/App
+        run: |
+          set -o pipefail
+          xcodebuild \
+            -scheme App \
+            -destination 'generic/platform=iOS Simulator' \
+            -configuration Debug \
+            CODE_SIGNING_ALLOWED=NO \
+            build | xcpretty || xcodebuild \
+            -scheme App \
+            -destination 'generic/platform=iOS Simulator' \
+            -configuration Debug \
+            CODE_SIGNING_ALLOWED=NO \
+            build
+
+      # 앱 빌드가 웹 전용 파일을 잠시 치웠다가 되돌린다(scripts/build-app.mjs).
+      - name: 작업 트리가 깨끗한지
+        run: git diff --exit-code
