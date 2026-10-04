@@ -201,7 +201,7 @@ const CommunityPostDetailScreen = ({ id }: { id?: string }): JSX.Element => {
           })}
         </div>
 
-        <div className="absolute bottom-0 z-1 flex w-full items-center bg-white/20 px-3.5 py-6">
+        <div className="absolute bottom-0 z-1 flex w-full items-center bg-white/20 px-3.5 pt-6 pb-[max(1.5rem,var(--safe-bottom))]">
           <div className="flex w-full items-center justify-center rounded-3xl border border-green-300 bg-white px-[1.125rem] py-2.5">
             <input
               type="text"

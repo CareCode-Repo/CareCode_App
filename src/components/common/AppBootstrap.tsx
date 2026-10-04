@@ -3,6 +3,7 @@ import { usePathname, useRouter } from 'next/navigation'
 import { ReactElement, useEffect } from 'react'
 import { initErrorReporting } from '@/utils/errorReporting'
 import { isNativeApp, isAndroid, nativePlatform } from '@/utils/native'
+import { closeTopmostOverlay } from '@/utils/overlay'
 
 /** 탭바가 있는 최상위 화면들. 여기서 뒤로 가기를 누르면 앱을 내린다. */
 const ROOT_PATHS = ['/', '/home', '/community', '/chat', '/search', '/mypage']
@@ -60,6 +61,9 @@ const AppBootstrap = ({ children }: { children: React.ReactNode }): ReactElement
 
     import('@capacitor/app').then(async ({ App }) => {
       const handle = await App.addListener('backButton', ({ canGoBack }) => {
+        // 떠 있는 창이 먼저다. 화면을 옮기거나 앱을 내리기 전에 그것부터 닫는다.
+        if (closeTopmostOverlay()) return
+
         if (canGoBack && !ROOT_PATHS.includes(pathname)) {
           router.back()
           return

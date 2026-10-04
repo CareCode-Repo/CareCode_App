@@ -1,7 +1,8 @@
 'use client'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
-import { ReactElement, ReactNode, useState } from 'react'
+import { ReactElement, ReactNode, useEffect, useState } from 'react'
+import { connectNativeQuerySignals } from '@/queries/nativeSignals'
 
 const QueryProvider = ({ children }: { children: ReactNode }): ReactElement => {
   const [queryClient] = useState(
@@ -34,6 +35,15 @@ const QueryProvider = ({ children }: { children: ReactNode }): ReactElement => {
         },
       }),
   )
+
+  /**
+   * 앱에서는 화면 전환·연결 상태를 네이티브가 알려 준다. 위의 `refetchOnWindowFocus` 와
+   * `refetchOnReconnect` 는 그 신호가 와야 의미가 있는데, WebView 의 브라우저 이벤트만으로는
+   * 오지 않거나 늦는다.
+   */
+  useEffect(() => {
+    connectNativeQuerySignals()
+  }, [])
 
   return (
     <QueryClientProvider client={queryClient}>

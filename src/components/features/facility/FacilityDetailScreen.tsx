@@ -188,7 +188,7 @@ const FacilityDetailScreen = ({ id }: { id?: string }): ReactElement => {
             />
           </section>
 
-          <div className="sticky bottom-0 flex flex-col gap-2 border-t border-gray-200 bg-white p-4">
+          <div className="sticky bottom-0 flex flex-col gap-2 border-t border-gray-200 bg-white p-4 pb-[max(1rem,var(--safe-bottom))]">
             {bookingDone ? (
               <p className="text-b1-semibold py-2 text-center text-green-700">
                 예약 신청이 접수됐어요. 시설 확인 후 알림으로 안내됩니다.

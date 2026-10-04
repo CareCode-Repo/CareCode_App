@@ -155,3 +155,53 @@ html body[data-scroll-locked] {
 html[data-native] .app-viewport {
   max-width: none;
 }
+
+/**
+ * 안전영역(노치·홈 인디케이터·제스처 바) 크기.
+ *
+ * 두 출처를 모두 봐야 한다. 플랫폼마다 값을 주는 방법이 다르다.
+ *
+ * - iOS : `env(safe-area-inset-*)` 가 WebKit 에서 네이티브로 온다.
+ * - 안드로이드: Capacitor 가 `--safe-area-inset-*` **CSS 변수**로 넣어 준다
+ *   (`SystemBars.java` 가 `documentElement.style.setProperty` 로 쏜다).
+ *   WebView 는 edge-to-edge 가 아니면 `env()` 를 0 으로 보고하므로 `env()` 만 쓰면
+ *   안드로이드에서는 아무 효과가 없다 — 실제로 그렇게 만들었다가 기기에서 확인하고 고쳤다.
+ *
+ * 둘 중 큰 값을 쓰고, 어느 쪽도 없으면 0 이 된다.
+ */
+:root {
+  --safe-top: max(var(--safe-area-inset-top, 0px), env(safe-area-inset-top, 0px));
+  --safe-bottom: max(var(--safe-area-inset-bottom, 0px), env(safe-area-inset-bottom, 0px));
+}
+
+/**
+ * 앱에서의 터치 감각.
+ *
+ * WebView 는 기본적으로 브라우저처럼 군다 — 탭하면 회색 상자가 번쩍이고, 버튼을 길게 누르면
+ * 텍스트 선택 메뉴가 뜨고, 스크롤 끝에서 당기면 배경이 늘어난다. 하나하나는 사소하지만
+ * 모이면 "앱인데 웹 같다" 는 인상의 대부분을 만든다.
+ *
+ * 웹에는 적용하지 않는다. 사이트에서 글을 끌어 선택하고 링크를 길게 눌러 복사하는 것은
+ * 사용자가 기대하는 동작이다.
+ */
+html[data-native] {
+  /* 탭할 때 번쩍이는 상자. 네이티브 앱에는 없는 것이다. */
+  -webkit-tap-highlight-color: transparent;
+  /* 길게 눌렀을 때 뜨는 미리보기·복사 메뉴. */
+  -webkit-touch-callout: none;
+  /* 스크롤 끝에서의 바운스와 뒤로 당겨 새로고침. 앱에는 새로고침이라는 개념이 없다. */
+  overscroll-behavior: none;
+}
+
+/*
+ * 글자 선택은 **끄지 않는다.** 약관 원문·게시글·병원 전화번호처럼 사용자가 끌어서 복사해야
+ * 하는 곳이 많다. 선택될 이유가 없는 조작 요소에서만 끈다.
+ */
+html[data-native] button,
+html[data-native] [role='button'],
+html[data-native] [role='tab'],
+html[data-native] nav,
+html[data-native] label {
+  user-select: none;
+  -webkit-user-select: none;
+}

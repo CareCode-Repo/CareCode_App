@@ -40,7 +40,10 @@ const TabBar = ({ className }: TabBarProps): ReactElement => {
     <nav
       aria-label="주요 메뉴"
       className={clsx(
-        'z-10 w-full rounded-t-2xl bg-white px-6 py-3 shadow-[0_-2px_8px_0_rgba(0,0,0,0.1)]',
+        // 아래쪽은 홈 인디케이터(아이폰)·제스처 바(안드로이드) 높이만큼 더 띄운다.
+        // 없는 기기에서는 env() 가 0 이라 기존 여백(py-3)이 그대로 남는다.
+        'z-10 w-full rounded-t-2xl bg-white px-6 pt-3 shadow-[0_-2px_8px_0_rgba(0,0,0,0.1)]',
+        'pb-[max(0.75rem,var(--safe-bottom))]',
         className,
       )}
     >

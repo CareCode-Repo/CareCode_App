@@ -8,8 +8,11 @@ import OfflineBanner from '@/components/common/OfflineBanner'
  * 인터넷이 끊겼을 때의 동작.
  *
  * 이게 없으면 지하철·엘리베이터에서 앱을 연 사용자는 화면마다 "불러오지 못했어요" 만 보고
- * 앱이 고장났다고 생각한다. 그리고 연결이 돌아와도 **앱에는 새로고침 버튼이 없어서**
- * 스스로 되살릴 방법이 없다 — 돌아왔을 때 다시 불러오는 쪽이 조용히 빠지기 쉬워 묶어 둔다.
+ * 앱이 고장났다고 생각한다.
+ *
+ * 다시 불러오는 일은 React Query 가 맡는다(`queries/nativeSignals.ts` 가 네이티브 연결
+ * 상태를 `onlineManager` 에 물려 둔다). 여기서도 무효화하면 복구할 때마다 같은 요청이 두 번
+ * 나가므로, **직접 부르지 않는다는 것**까지 함께 묶어 둔다.
  */
 const h = vi.hoisted(() => ({ native: { value: false } }))
 
@@ -68,7 +71,22 @@ describe('오프라인 안내', () => {
     expect(screen.getByText('본문')).toBeInTheDocument()
   })
 
-  it('돌아오면 안내를 걷고 화면을 다시 불러온다', async () => {
+  it('돌아오면 안내를 걷는다', async () => {
+    renderBanner()
+
+    await act(async () => {
+      setBrowserOnline(false)
+      window.dispatchEvent(new Event('offline'))
+    })
+    await act(async () => {
+      setBrowserOnline(true)
+      window.dispatchEvent(new Event('online'))
+    })
+
+    expect(screen.queryByRole('status')).not.toBeInTheDocument()
+  })
+
+  it('다시 불러오는 일은 직접 하지 않는다 — React Query 가 맡는다', async () => {
     const { client } = renderBanner()
     const invalidate = vi.spyOn(client, 'invalidateQueries')
 
@@ -81,19 +99,7 @@ describe('오프라인 안내', () => {
       window.dispatchEvent(new Event('online'))
     })
 
-    expect(screen.queryByRole('status')).not.toBeInTheDocument()
-    // 앱에는 새로고침 버튼이 없다. 여기서 다시 부르지 않으면 화면이 빈 채로 남는다.
-    expect(invalidate).toHaveBeenCalled()
-  })
-
-  it('처음부터 온라인이면 괜히 다시 불러오지 않는다', async () => {
-    const { client } = renderBanner()
-    const invalidate = vi.spyOn(client, 'invalidateQueries')
-
-    await act(async () => {
-      window.dispatchEvent(new Event('online'))
-    })
-
+    // 여기서도 무효화하면 `refetchOnReconnect` 와 겹쳐 같은 요청이 두 번 나간다.
     expect(invalidate).not.toHaveBeenCalled()
   })
 })

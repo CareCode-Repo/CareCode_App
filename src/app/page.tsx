@@ -45,7 +45,7 @@ export default function Home(): JSX.Element {
       </div>
 
       {/* 카카오 로그인 버튼 */}
-      <div className="absolute bottom-0 w-full bg-white px-6 pt-6 pb-[max(2rem,env(safe-area-inset-bottom))]">
+      <div className="absolute bottom-0 w-full bg-white px-6 pt-6 pb-[max(2rem,var(--safe-bottom))]">
         <button
           type="button"
           onClick={handleKakaoLogin}
