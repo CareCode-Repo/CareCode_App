@@ -2,10 +2,10 @@
 #
 # 이 저장소는 윈도우에서도 개발한다. 거기서는 `cap sync ios` 로 파일을 복사하는 것까지만
 # 되고, 컴파일은 Xcode(맥)에서만 된다 — 그래서 **iOS 쪽이 깨진 줄 모르고 지나갈 수 있다.**
-# 네이티브 설정(권한·딥링크 스킴·플러그인)을 고칠 때 특히 그렇다.
+# 권한 문구·딥링크 스킴·플러그인처럼 네이티브 설정을 고칠 때 특히 그렇다.
 #
-# 맥 러너는 느리고 비싸서 PR 마다 돌리지 않는다. main 에 들어갈 때와 필요할 때만 본다.
-# 서명은 하지 않는다 — 인증서 없이도 "컴파일되는가" 는 확인할 수 있고, 그게 여기서 보려는 것이다.
+# 맥 러너는 느리고 비싸서 PR 마다 돌리지 않는다. main 에 들어갈 때, 그것도 네이티브 쪽이나
+# 의존성이 바뀐 경우에만 돈다. 필요하면 Actions 탭에서 손으로도 돌릴 수 있다.
 name: iOS 빌드
 
 on:
@@ -48,16 +48,11 @@ jobs:
         working-directory: ios/App
         run: xcodebuild -resolvePackageDependencies -scheme App
 
+      # 서명은 하지 않는다 — 인증서 없이도 "컴파일되는가" 는 확인할 수 있고, 그게 여기서 보려는 것이다.
       - name: 시뮬레이터용 빌드 (서명 없음)
         working-directory: ios/App
         run: |
-          set -o pipefail
           xcodebuild \
-            -scheme App \
-            -destination 'generic/platform=iOS Simulator' \
-            -configuration Debug \
-            CODE_SIGNING_ALLOWED=NO \
-            build | xcpretty || xcodebuild \
             -scheme App \
             -destination 'generic/platform=iOS Simulator' \
             -configuration Debug \
