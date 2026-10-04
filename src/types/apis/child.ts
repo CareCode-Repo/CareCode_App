@@ -114,3 +114,51 @@ export const siblingOverviewSchema = z.object({
     .transform((v) => v ?? []),
 })
 export type SiblingOverview = z.infer<typeof siblingOverviewSchema>
+
+// ==================== 할 일 타임라인 ====================
+
+/** 서버 TimelineItem.type. 알 수 없는 값이 와도 화면이 깨지지 않게 문자열로 받고 라벨만 매핑한다. */
+export const TIMELINE_TYPE_LABEL: Record<string, string> = {
+  VACCINATION: '접종',
+  CHECKUP: '검진',
+  POLICY_DEADLINE: '지원금 마감',
+  NEW_TERM: '신학기',
+}
+
+/** 서버 TimelineItem.status. OVERDUE 는 지났는데 하지 않은 것이라 가장 강하게 보여준다. */
+export const TIMELINE_STATUS = ['OVERDUE', 'UPCOMING', 'DONE', 'INFO'] as const
+export type TimelineStatus = (typeof TIMELINE_STATUS)[number]
+
+// 서버 ChildTimelineResponse.TimelineItem 대응
+export const timelineItemSchema = z.object({
+  date: z.string(),
+  type: z.string(),
+  status: z.string(),
+  title: z.string(),
+  description: z.string().nullish(),
+  /** 해당 도메인 상세로 이어 주기 위한 식별자 */
+  referenceId: z.string().nullish(),
+  /** 그 날짜의 아이 월령 */
+  ageMonths: z.number().nullish(),
+})
+export type TimelineItem = z.infer<typeof timelineItemSchema>
+
+/**
+ * 서버 ChildTimelineResponse 대응.
+ * 접종·검진·지원금 마감이 화면 세 곳에 흩어져 있어 놓치던 것을 한 축에 모은 응답이다.
+ */
+export const childTimelineSchema = z.object({
+  childId: z.number(),
+  childName: z.string(),
+  birthDate: z.string().nullish(),
+  from: z.string().nullish(),
+  to: z.string().nullish(),
+  /** 지났는데 아직 하지 않은 항목 수 */
+  overdueCount: z.number().default(0),
+  upcomingCount: z.number().default(0),
+  items: z
+    .array(timelineItemSchema)
+    .nullish()
+    .transform((v) => v ?? []),
+})
+export type ChildTimeline = z.infer<typeof childTimelineSchema>

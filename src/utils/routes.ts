@@ -24,8 +24,12 @@ const withQuery = (path: string, params: Record<string, Id>): string => {
 
 export const routes = {
   // 자녀
+  childNew: (): string => '/children/new',
   childDetail: (childId: Id): string => withQuery('/children/detail', { childId }),
   childEdit: (childId: Id): string => withQuery('/children/edit', { childId }),
+
+  // 지원금
+  missedBenefits: (): string => '/benefits/missed',
 
   // 커뮤니티
   communityDetail: (postId: Id): string => withQuery('/community/detail', { id: postId }),

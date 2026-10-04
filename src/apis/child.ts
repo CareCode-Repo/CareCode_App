@@ -5,6 +5,8 @@ import {
   childBodySchema,
   childListSchema,
   childSchema,
+  ChildTimeline,
+  childTimelineSchema,
   GrowthMetric,
   GrowthPoint,
   growthPointListSchema,
@@ -97,4 +99,19 @@ export const getLatestGrowth = async (
   const res = await CareCode.get(`/children/${childId}/growth/latest`, { params: { metric } })
   if (res.status === 204 || !res.data) return null
   return growthPointSchema.parse(res.data)
+}
+
+/**
+ * GET /children/{childId}/timeline - 접종·검진·지원금 마감을 한 축에
+ *
+ * 기본 12개월이면 홈에서 "다음에 뭘 해야 하나" 를 답하기에 충분하다. 서버 상한은 36개월이다.
+ */
+export const getChildTimeline = async (
+  childId: number,
+  months?: number,
+): Promise<ChildTimeline> => {
+  const res = await CareCode.get(`/children/${childId}/timeline`, {
+    params: months ? { months } : undefined,
+  })
+  return childTimelineSchema.parse(res.data)
 }

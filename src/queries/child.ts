@@ -10,6 +10,7 @@ import { getAccessToken } from '@/apis/auth'
 import {
   deleteChild,
   getChildById,
+  getChildTimeline,
   getGrowthChart,
   getLatestGrowth,
   getMyChildren,
@@ -23,6 +24,7 @@ import {
 import {
   Child,
   ChildBody,
+  ChildTimeline,
   GrowthMetric,
   GrowthPoint,
   SiblingOverview,
@@ -55,6 +57,11 @@ export const childQueries = createQueryKeys('child', {
     queryFn: () => getOverdueVaccinations(childId),
   }),
 
+  timeline: (childId: number, months?: number) => ({
+    queryKey: ['timeline', childId, months ?? 'default'],
+    queryFn: () => getChildTimeline(childId, months),
+  }),
+
   growth: (childId: number, metric: GrowthMetric) => ({
     queryKey: ['growth', childId, metric],
     queryFn: () => getGrowthChart(childId, metric),
@@ -82,6 +89,22 @@ export const useVaccinationSchedule = (
   useQuery({
     ...childQueries.vaccinations(childId),
     enabled: Number.isFinite(childId) && childId > 0,
+  })
+
+/**
+ * 아이 한 명의 할 일을 날짜순으로.
+ *
+ * 홈에서 가장 먼저 그려지는 데이터라 한 번 받아 두면 화면을 옮겨도 다시 받지 않게 한다.
+ * 할 일은 분 단위로 바뀌지 않는다.
+ */
+export const useChildTimeline = (
+  childId: number,
+  months?: number,
+): UseQueryResult<ChildTimeline, Error> =>
+  useQuery({
+    ...childQueries.timeline(childId, months),
+    enabled: !!getAccessToken() && Number.isFinite(childId) && childId > 0,
+    staleTime: 5 * 60 * 1000,
   })
 
 export const useGrowthChart = (

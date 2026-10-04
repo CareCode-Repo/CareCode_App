@@ -12,8 +12,9 @@ import Spacer from '@/components/common/Spacer'
 import Input from '@/components/common/input'
 import ChatSection from '@/components/features/chat/ChatSection'
 import PopularPost from '@/components/features/community/popular-post'
-import MissedBenefitBanner from '@/components/features/home/MissedBenefitBanner'
+import MissedMoneyHero from '@/components/features/home/MissedMoneyHero'
 import QuickMenu from '@/components/features/home/QuickMenu'
+import UpcomingTasks from '@/components/features/home/UpcomingTasks'
 import PolicyCard from '@/components/features/policy/PolicyCard'
 import RecommendedPolicyCard from '@/components/features/policy/RecommendedPolicyCard'
 import { useGetCommunityPopular } from '@/queries/community'
@@ -22,6 +23,15 @@ import { useGetLatestPolicies, usePolicyRecommendations } from '@/queries/policy
 import { convertPolicyToCardProps } from '@/types/policy'
 import { routes } from '@/utils/routes'
 
+/**
+ * 홈.
+ *
+ * 처음에는 검색창과 추천·최신·인기 목록이 차례로 놓인 포털이었다. 그런데 지원금 목록은 정부24 가,
+ * 커뮤니티는 맘카페가 이미 더 많이 가지고 있다. 같은 모양으로는 이길 수 없다.
+ *
+ * 우리만 답할 수 있는 질문은 하나다 — "우리 아이가 지금 놓치고 있는 게 뭔가." 아이의 생년월일과
+ * 거주지를 아는 쪽만 계산할 수 있다. 그래서 첫 화면은 그 답부터 내놓고, 목록은 그 아래로 내렸다.
+ */
 const Home = (): ReactElement => {
   const router = useRouter()
   const hasUnread = useHasUnreadNotifications()
@@ -50,6 +60,18 @@ const Home = (): ReactElement => {
     >
       <div className="px-4.5">
         <Spacer className="h-5 shrink-0" />
+
+        {/* 첫 화면에서 가장 먼저 읽혀야 하는 두 가지 — 놓친 돈, 그리고 곧 해야 할 일 */}
+        <div className="flex flex-col gap-4">
+          <MissedMoneyHero />
+          <UpcomingTasks />
+        </div>
+
+        <Spacer className="h-6" />
+
+        {/*
+          아래부터는 둘러보기용이다. 검색은 전용 탭이 따로 있어 여기서는 입구만 남긴다.
+        */}
         <Input
           value=""
           aria-label="지원금 검색"
@@ -58,11 +80,11 @@ const Home = (): ReactElement => {
           onClick={handleSearchClick}
           readOnly
         />
+
         <Spacer className="h-5" />
+
         <div className="flex flex-col gap-4">
-          <MissedBenefitBanner />
           <QuickMenu />
-          <ChatSection />
           <MainSection title="맞춤 추천">
             <div className="flex flex-col gap-3 px-4 pb-4">
               {isRecommendationLoading ? (
@@ -84,6 +106,7 @@ const Home = (): ReactElement => {
               )}
             </div>
           </MainSection>
+          <ChatSection />
           <MainSection title="최근 정책">
             <div className="scrollbar-hide flex gap-3 overflow-x-auto px-4 pb-4 [&>*]:w-64 [&>*]:flex-shrink-0">
               {isLoading ? (
