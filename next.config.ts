@@ -43,15 +43,28 @@ const securityHeaders = () => {
    * 지금은 거기까지 가지 않되, **어디로 보낼 수 있는지**(connect/form/frame)는 조인다 —
    * XSS 가 나더라도 데이터를 밖으로 빼가기는 어렵게 한다.
    */
+  /**
+   * 개발 서버는 `eval` 을 쓴다 — HMR(Fast Refresh)과 소스맵이 그 위에 올라가 있다.
+   * 막으면 `npm run dev` 가 통째로 깨진다. 실제로 그렇게 만들었다가 기기에서
+   * `EvalError: Refused to evaluate a string as JavaScript` 로 드러났다.
+   * 운영 번들에는 들어가지 않는다.
+   */
+  const scriptSrc = isDevelopment
+    ? "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.gstatic.com"
+    : "script-src 'self' 'unsafe-inline' https://www.gstatic.com"
+
   const csp = [
     "default-src 'self'",
-    "script-src 'self' 'unsafe-inline' https://www.gstatic.com",
+    scriptSrc,
     "style-src 'self' 'unsafe-inline'",
     "font-src 'self' data:",
     // 프로필·첨부 이미지가 어느 도메인에서 올지 서버가 정한다.
     "img-src 'self' data: blob: https:",
     // 백엔드와 FCM 말고는 어디로도 보내지 않는다.
-    `connect-src 'self' ${apiOrigin} https://*.googleapis.com https://*.firebaseio.com wss://*.firebaseio.com`.trim(),
+    // 개발에서는 Fast Refresh 가 웹소켓으로 붙는다(ws://). 막으면 고쳐도 화면이 갱신되지 않는다.
+    `connect-src 'self' ${apiOrigin} https://*.googleapis.com https://*.firebaseio.com wss://*.firebaseio.com${
+      isDevelopment ? ' ws: http:' : ''
+    }`.trim(),
     "frame-ancestors 'none'",
     "base-uri 'self'",
     "form-action 'self'",
@@ -78,7 +91,8 @@ const securityHeaders = () => {
      */
     {
       key: 'Permissions-Policy',
-      value: 'geolocation=(self), camera=(), microphone=(), payment=(), usb=(), interest-cohort=()',
+      // `interest-cohort` 는 표준이 된 적이 없고 크롬이 걷어냈다 — 남겨 두면 경고만 찍힌다.
+      value: 'geolocation=(self), camera=(), microphone=(), payment=(), usb=()',
     },
   ]
 }

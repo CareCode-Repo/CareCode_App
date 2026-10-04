@@ -24,11 +24,38 @@ const config: CapacitorConfig = {
      * `http` 로 두면 어린이집·병원 찾기의 위치 권한부터 막힌다.
      */
     androidScheme: 'https',
+
+    /**
+     * 개발 서버를 앱이 직접 불러오게 한다(라이브 리로드).
+     *
+     * 평소에는 비운다 — 비어 있으면 번들된 파일을 연다. 값을 주면 그 주소에서 화면을
+     * 받아오므로 고칠 때마다 다시 빌드하지 않아도 되고, `NODE_ENV=development` 라서
+     * 개발 전용 화면(빠른 로그인 버튼 등)도 함께 뜬다. 정적 번들로는 확인할 수 없는
+     * 로그인 뒤 화면을 기기에서 보려면 이 길이 필요하다.
+     *
+     *   CAP_SERVER_URL=http://10.0.2.2:3000 CAP_ALLOW_CLEARTEXT=true npm run app:sync
+     *
+     * 10.0.2.2 는 안드로이드 에뮬레이터에서 본 호스트 PC 다. 실기기라면 PC 의 LAN 주소를 쓴다.
+     * **이 값이 들어간 채로 릴리스를 만들면 안 된다.** 앱이 개발 PC 를 바라보게 된다.
+     */
+    ...(process.env.CAP_SERVER_URL ? { url: process.env.CAP_SERVER_URL, cleartext: true } : {}),
   },
 
   android: {
-    // 앱 안에서 평문 HTTP 를 섞어 쓰지 않는다. 백엔드는 HTTPS 여야 한다.
-    allowMixedContent: false,
+    /**
+     * 평문 HTTP 를 섞어 쓸지.
+     *
+     * 기본은 막는다 — 운영 백엔드는 HTTPS 여야 하고, 페이지 출처가 `https://localhost` 라
+     * http 요청은 혼합 콘텐츠가 된다.
+     *
+     * 로컬 백엔드(http://10.0.2.2:8082)를 기기에서 붙여 볼 때만 연다:
+     *
+     *   CAP_ALLOW_CLEARTEXT=true npm run app:sync
+     *
+     * 이 값은 `cap sync` 시점에 `capacitor.config.json` 으로 구워져 앱에 들어간다.
+     * 켠 채로 릴리스를 만들지 않도록, 평소에는 빼고 sync 한다.
+     */
+    allowMixedContent: process.env.CAP_ALLOW_CLEARTEXT === 'true',
   },
 
   ios: {

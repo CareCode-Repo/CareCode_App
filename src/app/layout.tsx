@@ -53,8 +53,18 @@ export default function RootLayout({
                           <PromotionPanel />
                         </aside>
 
-                        {/* 앱 콘텐츠 영역 */}
-                        <div className="flex-1 bg-amber-50 sm:flex-2/3">
+                        {/*
+                          앱 콘텐츠 영역.
+
+                          `min-w-0` 이 없으면 이 칸이 화면보다 넓어진다. flex 자식의 기본
+                          `min-width` 는 `auto` 라서 내용의 고유 너비 아래로 줄어들지 않는데,
+                          안에 가로로 늘어선 카드 목록이 있어 그 고유 너비가 2700px 를 넘는다.
+
+                          웹에서는 아래 `max-w-sm` 이 폭을 384px 로 묶어 줘서 드러나지 않았다.
+                          앱에서는 그 제한을 푸는데(`html[data-native]`), 그 순간 터져서 탭
+                          다섯 개 중 하나만 화면에 남고 나머지는 오른쪽으로 밀려났다.
+                        */}
+                        <div className="min-w-0 flex-1 bg-amber-50 sm:flex-2/3">
                           <div className="app-viewport mx-auto h-dvh max-w-sm overflow-y-auto">
                             {children}
                           </div>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    디버그 빌드에만 적용되는 설정. 릴리스(스토어에 올라가는 것)에는 섞이지 않는다.
+
+    로컬 백엔드는 http 다. 그런데 앱의 WebView 페이지 출처는 https://localhost 이므로
+    http 주소로 보내는 요청은 **혼합 콘텐츠**가 되어 막힌다. 기기에서 로그인부터 끝까지
+    돌려 보려면 디버그에서만 평문을 허용해야 한다.
+
+    운영은 어차피 HTTPS 여야 한다(capacitor.config 의 allowMixedContent 는 false 가 기본).
+-->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <application android:usesCleartextTraffic="true" />
+</manifest>
