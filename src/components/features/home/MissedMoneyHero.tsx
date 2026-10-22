@@ -78,6 +78,13 @@ const MissedMoneyHero = (): ReactElement | null => {
 
   // 금액이 확인되지 않은 정책은 합계에서 빠져 있다. 그 사실을 숫자 옆에 적는다.
   const unpricedCount = data.claimable.filter((item) => !item.benefitAmount).length
+  const pricedCount = data.claimableCount - unpricedCount
+
+  // 소급 마감이 가장 가까운 건. 금액을 모를 때 대신 내세울 "급한 정도" 다.
+  const soonest = data.claimable
+    .map((item) => item.remainingMonths)
+    .filter((months): months is number => months != null)
+    .sort((a, b) => a - b)[0]
 
   if (data.claimableCount === 0) {
     // 소급 신청할 수 있는 건 없지만, 같은 실수를 반복하지 않도록 지나간 건은 보여 준다.
@@ -105,17 +112,41 @@ const MissedMoneyHero = (): ReactElement | null => {
 
   return (
     <section className="rounded-xl bg-green-600 p-5" aria-labelledby="missed-money-heading">
-      <h2 id="missed-money-heading" className="text-b1-regular text-gray-900">
-        {`${childLabel} 지금 받을 수 있는 돈`}
-      </h2>
+      {/*
+        금액을 한 건도 모를 때 합계를 내세우면 가장 큰 글자가 "0원" 이 된다.
+        지원금 금액은 공공데이터가 숫자로 주지 않아(조건별로 갈리는 자유 텍스트다) 제보가 쌓이기
+        전에는 비어 있는 게 정상인데, 그 정상 상태에서 홈이 "받을 돈 0원" 이라고 말해 버린다.
+        아무것도 못 받는다는 뜻으로 읽히고, 두 번째 실행은 없다.
 
-      {/* 이 숫자 하나를 보여주려고 홈 전체를 다시 짰다. 가장 크게, 가장 위에. */}
-      <p className="text-h1-bold mt-1 text-gray-900">{formatAmount(data.claimableAmount)}</p>
+        모르는 건 모른다고 하고, 아는 것으로 말한다 — 몇 건인지와 언제까지인지는 정확히 안다.
+      */}
+      {pricedCount === 0 ? (
+        <>
+          <h2 id="missed-money-heading" className="text-b1-regular text-gray-900">
+            {`${childLabel} 지금 신청할 수 있는 지원금`}
+          </h2>
+          <p className="text-h1-bold mt-1 text-gray-900">{`${data.claimableCount}건`}</p>
+          <p className="text-b1-regular mt-1 text-gray-900">
+            {soonest != null && soonest >= 0
+              ? `가장 급한 건 ${soonest === 0 ? '이번 달' : `${soonest}개월`} 안에 신청해야 해요.`
+              : '금액은 확인되는 대로 알려드릴게요.'}
+          </p>
+        </>
+      ) : (
+        <>
+          <h2 id="missed-money-heading" className="text-b1-regular text-gray-900">
+            {`${childLabel} 지금 받을 수 있는 돈`}
+          </h2>
 
-      <p className="text-b1-regular mt-1 text-gray-900">
-        {`지금 신청할 수 있는 ${data.claimableCount}건`}
-        {unpricedCount > 0 && ` (금액 확인된 ${data.claimableCount - unpricedCount}건 합계)`}
-      </p>
+          {/* 이 숫자 하나를 보여주려고 홈 전체를 다시 짰다. 가장 크게, 가장 위에. */}
+          <p className="text-h1-bold mt-1 text-gray-900">{formatAmount(data.claimableAmount)}</p>
+
+          <p className="text-b1-regular mt-1 text-gray-900">
+            {`지금 신청할 수 있는 ${data.claimableCount}건`}
+            {unpricedCount > 0 && ` (금액 확인된 ${pricedCount}건 합계)`}
+          </p>
+        </>
+      )}
 
       {data.expiredCount > 0 && (
         <p className="text-c1-regular mt-1 text-gray-900">

@@ -140,6 +140,47 @@ describe('MissedMoneyHero', () => {
     expect(screen.getByText(/대상 기간이 지난 3건/)).toBeInTheDocument()
   })
 
+  it('금액을 한 건도 모르면 0원 대신 건수로 말한다', () => {
+    /*
+      출시 직후의 기본 상태다. 공공데이터는 지원금 금액을 숫자로 주지 않아(조건별로 갈리는
+      자유 텍스트다) 제보가 쌓이기 전까지 금액은 전부 비어 있다. 그때 합계를 내세우면 홈에서
+      가장 큰 글자가 "0원" 이 되고, 받을 게 없다는 뜻으로 읽힌다.
+    */
+    summary.value = buildSummary({
+      claimableCount: 3,
+      claimableAmount: 0,
+      claimable: [
+        benefit({ policyId: 1, benefitAmount: null, remainingMonths: 5 }),
+        benefit({ policyId: 2, benefitAmount: null, remainingMonths: 2 }),
+        benefit({ policyId: 3, benefitAmount: null, remainingMonths: 9 }),
+      ],
+    })
+
+    renderHero()
+
+    expect(screen.getByText('3건')).toBeInTheDocument()
+    expect(screen.queryByText('0원')).not.toBeInTheDocument()
+    // 금액을 모를 때도 급한 정도는 정확히 안다.
+    expect(screen.getByText(/가장 급한 건 2개월 안에/)).toBeInTheDocument()
+  })
+
+  it('금액을 일부라도 알면 합계를 내세우되 기준을 밝힌다', () => {
+    summary.value = buildSummary({
+      claimableCount: 3,
+      claimableAmount: 2_000_000,
+      claimable: [
+        benefit({ policyId: 1 }),
+        benefit({ policyId: 2, benefitAmount: null }),
+        benefit({ policyId: 3, benefitAmount: null }),
+      ],
+    })
+
+    renderHero()
+
+    expect(screen.getByText('200만원')).toBeInTheDocument()
+    expect(screen.getByText(/금액 확인된 1건 합계/)).toBeInTheDocument()
+  })
+
   it('놓친 것이 하나도 없으면 확인했다는 사실을 돌려준다', () => {
     summary.value = buildSummary({
       claimableCount: 0,
